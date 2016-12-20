@@ -210,7 +210,7 @@ Lemma free_perm vs1 vs2 : perm vs1 vs2 -> free vs2 -> free vs1.
 Proof.
 intros HH Hvs1.
 assert (Hf: forall (k1: list _), length k1 = length vs1 ->
-  exists k2, perm k1 k2 /\ k1 *X* vs1 = k2 *X* vs2).
+  exists (k2:list _), perm k1 k2 /\ k1 *X* vs1 = k2 *X* vs2).
 elim HH; clear vs1 vs2 HH Hvs1; auto.
 intros l k1 Hk1; exists k1; split; auto.
 apply perm_id.
