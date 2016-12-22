@@ -801,7 +801,8 @@ Proof.
 generalize k; clear k.
 induction n as [| n IH]; simpl.
 intros [| k] Hx.
-    rewrite mprod_S, mprod0l, addE0r; auto.
+rewrite (mprod_S (vn_eparams 0)); auto.
+    rewrite mprod0l, addE0r; auto.
     simpl; rewrite multK1r; auto.
   rewrite mprod0r.
 generalize Hx; case eqK_spec; auto.
@@ -810,7 +811,8 @@ intros [|k ]; destruct x.
 case eq0_spec; intros Hx Hx1; try discriminate; subst.
 rewrite lift_mprod, IH; auto.
 intros HH.
-rewrite mprod_app, !lift_mprod, !dlift_mprod, !IH; auto.
+rewrite (mprod_app (vn_eparams n.+1)); auto.
+rewrite  !lift_mprod, !dlift_mprod, !IH; auto.
 simpl; Vfold n; rewrite addE0l, addE0r; auto.
 generalize HH; case hom; auto; intros; discriminate.
 generalize HH; case hom; auto; intros; discriminate.
