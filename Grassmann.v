@@ -5045,7 +5045,7 @@ Module Ex2D.
 
 (* Q in 2 D *)
 
-Let p := Qparams 2.
+Local Definition p := Qparams 2.
 
 Notation "[[ X: x , Y: y , X**Y: xy ]]" :=  ((xy,x),(y,0)).
 
@@ -5072,7 +5072,7 @@ Module Ex3D.
 
 (* Q in 3 D *)
 
-Let p := Qparams 3.
+Local Definition p := Qparams 3.
 
 Notation "[[ X: x , Y: y ,  Z: z , X**Y: xy , Y**Z: yz  , X**Z: xz , X**Y**Z: xyz ]]" :=
   ((((xyz,xy),(xz,x)), ((yz,y),(z,0)))).
@@ -5130,7 +5130,7 @@ Module Ex4D.
 
 (* Q in 4 D *)
 
-Let p := Qparams 4.
+Local Definition p := Qparams 4.
 
 Notation " '[[' 'X:' x ',' 'Y:' y ','  'Z:' z , 'T:' t ',' 'X**Y:' xy ',' 'X**Z:' xz ',' 'X**T:' xt ',' 'Y**Z:' yz ',' 'Y**T:' yt ',' 'Z**T:' zt ',' 'X**Y**Z:' xyz ',' 'X**Y**T:' xyt ',' 'X**Z**T:' xzt ',' 'Y**Z**T:' yzt ','  'X**Y**Z**T:' xyzt ','  'K:' vv  ']]'" :=
  ((((xyzt, xyz), (xyt, xy)), ((xzt, xz), (xt, x))) , 
@@ -5203,7 +5203,7 @@ Module Ex5D.
 
 (* Q in 5 D *)
 
-Let p := Qparams 5.
+Local Definition p := Qparams 5.
 
 Notation " [[ X: x , Y: y ,  Z: z , T: t , U: u , X**Y: xy , X**Z: xz , X**T: xt , X**U: xu , Y**Z: yz , Y**T: yt , Y**U: yu , Z**T: zt , Z**U: zu , T**U: tu , X**Y**Z: xyz , X**Y**T: xyt , X**Y**U: xyu , X**Z**T: xzt , X**Z**U: xzu , X**T**U: xtu , Y**Z**T: yzt , Y**Z**U: yzu , Y**T**U: ytu , Z**T**U: ztu , X**Y**Z**T: xyzt , X**Y**Z**U: xyzu , X**Y**T**U: xytu , X**Z**T**U: xztu , Y**Z**T**U: yztu , X**Y**Z**T**U: xyztu , 'K:' vv ]]" :=
 (
@@ -5238,7 +5238,7 @@ Module Ex6D.
 
 (* Q in 6 D *)
 
-Let p := Qparams 6.
+Local Definition p := Qparams 6.
 
 Definition X := (Vgen p 0).
 Eval compute in X.
