@@ -23,11 +23,11 @@ Ltac Kfold n :=
      change (Kn.genk p n 0%f) with (E0 (Kn.vn_eparams p n)).
 
 (* A vector is a full-binary tree of hight n *)
-Function vect (n: nat): Set := 
+Fixpoint vect (n: nat): Set := 
   match n with O => K | S n1 => (vect n1 * vect n1)%type end.
 
 (* Equality over two trees: Equality on leaves *)
-Function eq (n : nat) : vect n -> vect n -> bool :=
+Fixpoint eq (n : nat) : vect n -> vect n -> bool :=
   match n return (vect n -> vect n -> bool) with
   | 0%nat => fun a b => (a ?= b)%f
   | S n1 =>
@@ -38,7 +38,7 @@ Function eq (n : nat) : vect n -> vect n -> bool :=
   end.
 
 (* Adding two trees: adding its leaves *)
-Function add (n : nat) : vect n -> vect n -> vect n :=
+Fixpoint add (n : nat) : vect n -> vect n -> vect n :=
   match n return (vect n -> vect n -> vect n) with
   | 0%nat => fun a b => (a + b)%f
   | S n1 =>
@@ -48,13 +48,13 @@ Function add (n : nat) : vect n -> vect n -> vect n :=
   end.
 
 (* Generate the constant k for the dimension n *)
-Function genk (n: nat) (k: K) {struct n}: (vect n) :=
+Fixpoint genk (n: nat) (k: K) {struct n}: (vect n) :=
    match n return vect n with 0%nat => k | n1.+1 => (genk n1 0%f, genk n1 k) end.
 Notation " [ k ] " := (genk _ k%f) (at level 9): g_scope.
 Arguments Scope genk [_ field_scope].
 
 (* Multiplication by a scalar *)
-Function scal (n : nat) (k: K) {struct n}: vect n -> vect n :=
+Fixpoint scal (n : nat) (k: K) {struct n}: vect n -> vect n :=
   match n return (vect n -> vect n) with
   | 0%nat => fun a => (k * a)%f
   | S n1 =>
@@ -123,7 +123,7 @@ Hint Rewrite multK0l multK0r oppK0 addK0l addK0r
 Ltac Grm0 := autorewrite with GRm0; auto.
 
 (* Subtraction  *)
-Function sub (n : nat) : vect n -> vect n -> vect n :=
+Fixpoint sub (n : nat) : vect n -> vect n -> vect n :=
   match n return (vect n -> vect n -> vect n) with
   | 0%nat => fun a b => (a + (- b))%f
   | S n1 =>
@@ -184,7 +184,7 @@ right; intro HH; case H1; injection HH; auto.
 Qed.
 
 (* Generate the p element of the base in dimension n *)
-Function gen (n: nat) (p: nat) {struct n} : vect n :=
+Fixpoint gen (n: nat) (p: nat) {struct n} : vect n :=
   match n return vect n with 0 => 1%f | S n1 =>
     match p with
       0 => (genk n1 1%f, genk n1 0%f)
@@ -238,7 +238,7 @@ destruct x1; destruct x2; rewrite IH; auto.
 Qed.
 
 (* Equality to zero: Equality to zero on leaves *)
-Function eq0 (n : nat) : vect n -> bool :=
+Fixpoint eq0 (n : nat) : vect n -> bool :=
   match n return (vect n -> bool) with
   | 0%nat => fun a => (a ?= 0)%f
   | S n1 =>
@@ -301,7 +301,7 @@ rewrite scalE0r, IH; auto.
 Qed.
 
 (* Homogeneity *)
-Function hom (n k : nat) {struct n} : vect n -> bool :=
+Fixpoint hom (n k : nat) {struct n} : vect n -> bool :=
   match n return (vect n -> bool) with
   | 0%nat => fun a => match k with O => true | S _ => a ?= 0 end
   | S n1 =>
@@ -428,7 +428,7 @@ Qed.
 Hint Resolve scal_hom.
 
 (* Get homogeneity part *)
-Function get_hom (n m : nat) {struct n} : vect n -> vect n :=
+Fixpoint get_hom (n m : nat) {struct n} : vect n -> vect n :=
   match n return (vect n -> vect n) with
   | 0%nat => fun a => match m with O => a | S _ => 0 end
   | S n1 =>
@@ -491,7 +491,7 @@ contradict Hnm; auto with arith.
 destruct x as [x1 x2]; rewrite !IH; auto with arith.
 Qed.
 
-Function sum (n : nat) (f: (nat -> vect n)) (m : nat) {struct m} :
+Fixpoint sum (n : nat) (f: (nat -> vect n)) (m : nat) {struct m} :
     vect n :=
   match m with
   | 0%nat => f 0%nat
@@ -544,7 +544,7 @@ rewrite !IH; auto.
 Qed.
 
 (* First degre that is used to guess if a vector is homegene *)
-Function first_deg (n : nat) {struct n} : vect n -> nat :=
+Fixpoint first_deg (n : nat) {struct n} : vect n -> nat :=
   match n return (vect n -> nat) with
   | 0%nat => fun a => 0%nat
   | S n1 =>
@@ -1034,7 +1034,7 @@ rewrite <-cblk_homk_equiv; intros HH; elim HH; auto.
 Qed.
    
 (* Ad-hoc conjugate function in order to define the product *)
-Function conj (n : nat) (b: bool) {struct n}: vect n -> vect n :=
+Fixpoint conj (n : nat) (b: bool) {struct n}: vect n -> vect n :=
   match n return (vect n -> vect n) with
   | 0%nat => fun a => if b then (- a)%f else a
   | S n1 =>
@@ -1557,7 +1557,7 @@ apply in_or_app; right; apply in_map; auto.
 Qed.
 
 (* given a list of vectors produce the list of all products *)
-Function all_prods (n: nat) (vs: list (vect n)) {struct vs} : list (vect n) :=
+Fixpoint all_prods (n: nat) (vs: list (vect n)) {struct vs} : list (vect n) :=
   match vs with
     nil => 1 :: nil
   | v::vs1 => let vs1 := all_prods n vs1 in 
@@ -1630,7 +1630,7 @@ apply IH; auto.
 Qed.
 
 (* Turn a vector in a list of scalar to be used for multiple product *)
-Function v2l (n: nat) : vect n -> list K :=
+Fixpoint v2l (n: nat) : vect n -> list K :=
   match n return vect n -> list K with
     O => fun k => k :: nil
   | S n1 => fun x => let (x1, x2) := x in
@@ -2181,7 +2181,7 @@ Qed.
 
 (* The linear form is defined by its finger print on the base *)
 
-Function contra (n : nat) {struct n}: kn n -> vect n -> vect n :=
+Fixpoint contra (n : nat) {struct n}: kn n -> vect n -> vect n :=
   match n return (kn n -> vect n -> vect n) with
   | 0%nat => fun k a => 0
   | S n1 =>
@@ -3757,7 +3757,7 @@ left; apply in_or_app; left; apply (in_map (dlift n)); auto.
 Qed.
 
 (* Ad-hoc conjugate function in order to define the join *)
-Function dconj (n : nat) (b: bool) {struct n} : vect n -> vect n :=
+Fixpoint dconj (n : nat) (b: bool) {struct n} : vect n -> vect n :=
   match n return (vect n -> vect n) with
   | 0%nat => fun a => if b then (- a)%f else a
   | S n1 =>
@@ -4867,7 +4867,7 @@ Qed.
 
 Definition Kn := kn p.
 
-Function k2g (n: nat) {struct n} : kn n ->  vect n :=
+Fixpoint k2g (n: nat) {struct n} : kn n ->  vect n :=
   match n return kn n -> vect n with 
     O => fun k => 0%f
   | S n1 => fun v => let (k, v1) := v in ([k], k2g n1 v1)

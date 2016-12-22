@@ -16,14 +16,14 @@ Open Scope kn_scope.
 
 (* A vector is a list of length n *)
 
-Function kn (n: nat): Set := 
+Fixpoint kn (n: nat): Set := 
   match n with O => unit | S n1 => (K * kn n1)%type end.
 
 
 (** We first build the functions of the vector space *)
 
 (* Equality of two vectors as list *)
-Function eq (n : nat) : kn n -> kn n -> bool :=
+Fixpoint eq (n : nat) : kn n -> kn n -> bool :=
   match n return (kn n -> kn n -> bool) with
   | 0%nat => fun a b => true
   | S n1 =>
@@ -34,14 +34,14 @@ Function eq (n : nat) : kn n -> kn n -> bool :=
   end.
 
 (* Generate the constant k for the dimension n *)
-Function genk (n: nat) (k: K) {struct n}: (kn n) :=
+Fixpoint genk (n: nat) (k: K) {struct n}: (kn n) :=
    match n return kn n with 0%nat => tt |  
                             (S n1) => (k, genk n1 k) end.
 
 Notation " [ k ] " := (genk _ k) (at level 10): kn_scope.
 
 (* Adding two vectors as list *)
-Function add (n : nat) : kn n -> kn n -> kn n :=
+Fixpoint add (n : nat) : kn n -> kn n -> kn n :=
   match n return (kn n -> kn n -> kn n) with
   | 0%nat => fun a b => tt
   | S n1 =>
@@ -51,7 +51,7 @@ Function add (n : nat) : kn n -> kn n -> kn n :=
   end.
 
 (* Multiplication by a scalar *)
-Function scal (n : nat) (k: K) {struct n}: kn n -> kn n :=
+Fixpoint scal (n : nat) (k: K) {struct n}: kn n -> kn n :=
   match n return (kn n -> kn n) with
   | 0%nat => fun a => tt
   | S n1 =>
@@ -138,7 +138,7 @@ right; intro HH; case H1; injection HH; auto.
 Qed.
 
 (* Conversion from list to kn *)
-Function l2kn (n:nat) (l:list K) {struct l} : kn n:=
+Fixpoint l2kn (n:nat) (l:list K) {struct l} : kn n:=
   match n return kn n with 
   | 0 => tt 
   | S n1 => match l with 
@@ -216,7 +216,7 @@ Lemma kn2l_0 n : eql_t0 (kn2l n 0) nil.
 Proof. elim n; simpl; auto. Qed.
 
 (* Generate the p element of the base in dimension n *)
-Function gen (n: nat) (p: nat) {struct n} : kn n :=
+Fixpoint gen (n: nat) (p: nat) {struct n} : kn n :=
   match n return kn n with O => tt | S n1 =>
     match p with
       0 => (1%f, genk n1 0%f)
@@ -284,7 +284,7 @@ rewrite IH, lift_add, lift_scal; auto.
 Qed.
 
 (* The base as the list of all the generators *)
-Function base (n : nat) : list (kn n) :=
+Fixpoint base (n : nat) : list (kn n) :=
   match n return list (kn n) with
   | 0 => nil
   | S n1 => ('e_0: kn (S n1)) :: map (lift n1) (base n1)
