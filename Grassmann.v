@@ -2920,6 +2920,7 @@ case (eqK_spec _ Hp a 0%f); intros H4; subst.
 rewrite mprod_S; Grm0.
 case (IH l); auto with datatypes.
 intros HH; case H1; rewrite mprod_S, HH; Grm0.
+rewrite (scalE0l (vn_eparams n)); auto.
 intros k (l1, (H1l1, H2l1)).
 exists k%f; exists ((-(1)).* b::l1); split.
 simpl; intros v [Hv|Hv]; subst; auto.
@@ -2927,11 +2928,15 @@ Vfold n; apply scal_hom; auto with datatypes.
 rewrite joinl_swap, joinlS, joinlS, H2l1.
 rewrite join_scall, <-(scal_multE _ (fn n) (-(1))%f); auto.
 rewrite multK_m1_m1, scalE1, join_scalr; auto.
+rewrite (scalE0l (vn_eparams n)); auto. rewrite (addE0l (vn_eparams n)); auto.
 intros HH; discriminate.
 intros HH; subst; destruct ll; try discriminate.
 case H1; rewrite mprod_S; Grm0.
+rewrite (scalE0l (vn_eparams n)); auto.
 apply cbl_trans with l; auto.
 intros; rewrite cbl1_hom1_equiv; auto with datatypes.
+rewrite (scalE0l (vn_eparams n)); auto.
+rewrite addE0l; auto.
 apply mprod_cbl; auto.
 apply cbl_scal.
 rewrite cbl1_hom1_equiv; auto with datatypes.
