@@ -1672,7 +1672,7 @@ replace
  ((v2l n x1) *X*
     (map (fun x : vect n => ((1: vect n, 0: vect n): vect n.+1) ∨ lift n x) (all_prods n (base n 1))))
 with (x1, 0: vect n); auto.
-simpl; Vfold nl; rewrite addE0l, addE0r; auto.
+simpl; Vfold n; rewrite addE0l, addE0r; auto.
 change ((1: vect n, 0: vect n): vect n.+1) with ('e_0: vect n.+1).
 assert (H: forall l,
   map (fun x : vect n =>  'e_0 ∨ (lift n x)) l =
