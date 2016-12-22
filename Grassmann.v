@@ -652,7 +652,9 @@ generalize vs; clear vs.
 induction ks as [| k ks IH].
   intros vs; rewrite !mprod0l; auto.
 intros [| v vs]; simpl; try rewrite mprod0r; auto.
-rewrite !mprod_S, IH, dlift_add, dlift_scal; auto.
+rewrite (mprod_S (vn_eparams n.+1)); auto.
+rewrite mprod_S; auto.
+rewrite  IH, dlift_add, dlift_scal; auto.
 Qed.
 
 (* Coordinates for k vector *)
