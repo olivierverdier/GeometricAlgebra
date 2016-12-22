@@ -16,7 +16,7 @@ Notation "0" := (E0 _): vector_scope.
 Notation "x + y" := (addE _ x y): vector_scope.
 Notation "x .* y" := (scalE _ x%f y) (at level 31, no associativity): vector_scope.
 
-Arguments Scope scalE [_ field_scope vector_scope].
+Arguments scalE _ _%field_scope _%vector_scope.
 
 Section VectorSpace.
 
