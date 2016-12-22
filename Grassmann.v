@@ -4967,7 +4967,7 @@ Vrm0.
 rewrite !dualk, !joinkl; simpl expK; Grm0; Krm1.
 rewrite !(conjf_hom _ _ _ (k2g_hom _ _)); simpl expK; Grm0; Krm1.
 rewrite dual_scal, !join_scall, !join_scalr, IH.
-rewrite <- scal_multE, scal_addEl, <-!scal_multE; Krm1.
+rewrite <- scal_multE, (scal_addEl (vn_eparams n)); auto. rewrite <-!scal_multE; Krm1.
 rewrite (join_allhr _ _ _ (k2g_hom _ _)); Vrm0.
 Qed.
 
