@@ -272,14 +272,15 @@ Lemma lift_scal n k x :  lift n (k .* x) = scalE (vn_eparams (S n)) k (lift n x)
 Proof. unfold lift; simpl; rewrite multK0r; auto. Qed.
 
 (* Lift on the multiple product *)
-Lemma lift_mprod (n: nat) ks vs : ks *X* map (lift n) vs = 
+Lemma lift_mprod (n: nat) ks vs : ks *X* map (lift n) vs =
   lift n (mprod (vn_eparams n) ks vs).
 Proof.
 generalize vs; clear vs; induction ks as [| k ks IH].
   intros vs; repeat rewrite mprod0l; auto.
 intros [| v vs]; simpl; try rewrite mprod0r; auto.
-repeat rewrite mprod_S; try apply fn;
-   rewrite IH, lift_add, lift_scal; auto.
+rewrite (mprod_S (vn_eparams n.+1)); auto.
+rewrite mprod_S; auto.
+rewrite IH, lift_add, lift_scal; auto.
 Qed.
 
 (* The base as the list of all the generators *)
