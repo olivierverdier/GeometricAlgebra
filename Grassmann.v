@@ -2231,7 +2231,9 @@ Lemma contra0l n (x:vect n) : #<0, x># = 0.
 Proof.
 induction n as [|n IH]; simpl; auto.
 destruct x.
-Vfold n1; repeat rewrite IH; Grm0.
+Vfold n.
+Vfold n; repeat rewrite IH; Grm0.
+rewrite (scalE0l (vn_eparams n)); auto.
 Qed.
 
 Lemma contrak n i lf : #<lf, [i]># = 0 :> vect n.
