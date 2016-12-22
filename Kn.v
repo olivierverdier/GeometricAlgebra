@@ -324,27 +324,33 @@ Qed.
 (* The base is free *)
 Lemma base_free n : free _ (base n).
 Proof.
-induction n as [| n IH]; simpl.
- intros [k | ks]; simpl; try (intros; discriminate).
-intros _ k1 [].
-intros [| k ks]; try (case n; simpl; intros; discriminate).
-intros H1; rewrite mprod_S, lift_mprod; auto.
-simpl; intros HH; injection HH; clear HH.
-Kfold n.
-rewrite scalE0r, addE0l, addK0r; auto.
-intros H2 H3 k1 [Hk1 | Hk1].
-case (multK_integral _ Hp _ _ H3); try subst; auto; intros Heq.
-case (one_diff_zero (vn_eparams n)); auto; apply (vgenk_inj _ _ _ Heq).
-injection H1; rewrite map_length; auto.
-intros Hl; apply (IH ks); auto.
+  induction n as [|n IH].
+  *
+     intro. simpl. intros H H0 k H1.
+    assert (ks = nil) by (destruct ks; auto; discriminate).  subst.  inversion H1. 
+  * intro. destruct ks as [| k ks].
+  - simpl. intros. discriminate.
+  -
+    intros H1. simpl base. rewrite mprod_S, lift_mprod; auto.
+    simpl. intros HH. injection HH. clear HH.
+    Kfold n.
+    rewrite scalE0r, addE0l, addK0r; auto.
+    intros H2 H3 k1 [Hk1 | Hk1].
+    +
+      case (multK_integral _ Hp _ _ H3); try subst; auto; intros Heq.
+      case (one_diff_zero (vn_eparams n)); auto; apply (vgenk_inj _ _ _ Heq).
+    +
+      injection H1; rewrite map_length; auto.
+      intros Hl; apply (IH ks); auto.
 Qed.
+
 
 Lemma k2l_mprod n (v: kn n) : kn2l n v *X* base n = v.
 Proof.
 generalize v; clear v; induction n as [| n IH].
 simpl; intros []; auto.
 simpl; intros (x, v).
-rewrite mprod_S; auto.
+rewrite (mprod_S (vn_eparams n.+1)); auto.
 rewrite lift_mprod, IH.
 simpl; Kfold n; auto.
 Krm1; Vrm0.
