@@ -51,7 +51,7 @@ Fixpoint add (n : nat) : vect n -> vect n -> vect n :=
 Fixpoint genk (n: nat) (k: K) {struct n}: (vect n) :=
    match n return vect n with 0%nat => k | n1.+1 => (genk n1 0%f, genk n1 k) end.
 Notation " [ k ] " := (genk _ k%f) (at level 9): g_scope.
-Arguments Scope genk [_ field_scope].
+Arguments genk _ _%field_scope.
 
 (* Multiplication by a scalar *)
 Fixpoint scal (n : nat) (k: K) {struct n}: vect n -> vect n :=
