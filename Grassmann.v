@@ -1934,7 +1934,8 @@ rewrite map_length; auto.
 destruct l; simpl; auto.
 apply one_diff_zero; auto.
 clear Hd Hl Hp1; induction l as [|a l IH]; simpl; auto.
-rewrite mprod_S, (H a); Vrm0; auto with datatypes.
+rewrite  (mprod_S (vn_eparams 0)); auto.
+rewrite (H a); Vrm0; auto with datatypes.
 intros l Hl Hd Hprod; unfold is_vector in Hl.
 case (cbl_base1_list_split n l); auto.
 intros lx (ly, (H1ly, (H2ly, (H3ly, H4ly)))).
@@ -1986,7 +1987,8 @@ case (IH ly); auto; try split.
 intros ly1 (i1, (H1i1, (H2i1, (H3i1, H4i1)))).
 exists (0%f::ly1); exists i1; repeat split; simpl; Vfold n; auto.
 rewrite map_length; simpl in H1i1; rewrite H1i1; auto.
-rewrite mprod_S, scalE0l, addE0l; auto.
+rewrite (mprod_S (vn_eparams n.+1)), scalE0l, addE0l; auto.
+
 rewrite (lift_mprod n), H4i1; auto.
 intros; discriminate.
 destruct ly; try (intros; discriminate); case Hly; auto.
@@ -2046,6 +2048,7 @@ intros ly2 (i2, (H1ly2, (H2ly2, (H3ly3, H3ly4)))).
 case (length_split _ _ _ _ _ _ _ H1ly2).
 intros k1 (k2, (lk1, (lk2, (Hlk1, (Hlk2, Hlk3))))).
 generalize (eqK_dec _ Hp k2 0%f); case eqK; intros Hk2.
+*
 exists (k1::0%f::lk1++lk2)%list; exists i2; repeat split; auto.
 generalize Hlk2 Hlk3; simpl; clear Hlk2 Hlk3; intros Hlk2 Hlk3.
 rewrite !app_length, Hlk2, Hlk3; auto.
@@ -2054,8 +2057,10 @@ intros [HH | HH]; auto.
 case (in_app_or  _ _ _ HH); auto with datatypes.
 simpl; intros [HH1 | HH2]; try subst; auto with datatypes.
 generalize H3ly4; rewrite Hlk1, Hk2; simpl.
-rewrite !mprod_S, !mprod_app, !mprod_S; auto.
+rewrite !(mprod_S (vn_eparams n.+1)), !(mprod_app (vn_eparams n.+1)), !(mprod_S (vn_eparams n.+1)); auto.
 rewrite !scalE0l, !addE0l; auto.
+rewrite (scalE0l (vn_eparams n.+1)); auto. rewrite addE0l; auto. 
+*
 exists ((k1+-(k2 * fst b))%f::(k2 * fst a)%f::lk1++lk2)%list; 
   exists (k2 * fst a)%f; repeat split; auto with datatypes.
 generalize Hlk2 Hlk3; simpl; clear Hlk2 Hlk3; intros Hlk2 Hlk3.
@@ -2063,7 +2068,7 @@ rewrite !app_length, Hlk2, Hlk3; auto.
 intros HH; case (multK_integral _ Hp _ _ HH); intros HH1; auto with datatypes.
 case (H1ly a); auto with datatypes.
 rewrite <- H3ly4; rewrite Hlk1; simpl.
-rewrite Hx1, !mprod_S, !mprod_app, !mprod_S, !scal_addEr,
+rewrite Hx1, !(mprod_S (vn_eparams n.+1)), !(mprod_app (vn_eparams n.+1)), !(mprod_S (vn_eparams n.+1)), !scal_addEr,
         !scal_addEl, !addE_assoc; auto.
 apply f_equal2 with (f := add n.+1); auto.
 rewrite addE_com,!addE_assoc, addE_com, !addE_assoc; auto.
