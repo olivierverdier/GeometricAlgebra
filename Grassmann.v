@@ -1710,7 +1710,7 @@ case (list_split _ _ _ _ Hk1).
 intros l1 (l2, (Hl1, (Hl2, Hl3))).
 rewrite Hl1.
 unfold base, all_prods; fold base; fold all_prods.
-rewrite mprod_app; auto.
+rewrite (mprod_app (vn_eparams n.+1)); auto.
 2: rewrite map_length, map_length; auto.
 rewrite map_map.
 assert (H1: forall l,
@@ -1725,7 +1725,10 @@ assert (H1: forall (l1: list K) (l2: list (vect n)),
   (l1 *X* l2, genk n 0)).
 clear l1 l2 Hl1 Hl2 Hl3.
 induction l1 as [| a l1 Hlrec]; intros [| b l2]; auto.
-simpl; Vfold n; rewrite mprod_S, mprod_S, Hlrec; auto.
+simpl; Vfold n.
+rewrite (mprod_S (vn_eparams n.+1)); auto.
+rewrite (mprod_S (vn_eparams n)); auto.
+rewrite Hlrec; auto.
 simpl; Vfold n; rewrite scalE0r, addE0l; auto.
 rewrite H1, lift_mprod.
 simpl; Vfold n; rewrite addE0l, addE0r; auto.
