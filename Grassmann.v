@@ -2287,7 +2287,7 @@ Proof.
 induction n as [|n IH]; simpl; Krm0.
 destruct x as [a x1]; destruct y as [b y1]; destruct M as [M1 M2].
 Vfold n; Kfold n.
-rewrite !IH, scal_addEr, scal_addEl; auto.
+rewrite !IH, scal_addEr, (scal_addEl (vn_eparams n)); auto.
 apply f_equal2 with (f := @pair _ _); auto.
 rewrite !addE_assoc; auto.
 apply f_equal2 with (f := addE _); auto.
