@@ -3450,7 +3450,7 @@ case H1; intros i [H1i H2i]; right; exists i; split; auto.
 generalize (F1 true).
 match goal with |- context[fold_left ?X ?Y ?Z] =>
   case (fold_left X Y Z); auto
-end; intros []; auto; intros []; auto.
+end. intros []; auto.  intros []; auto. contradict H; auto.
 Qed.
 
 Definition decompose n (v: vect n) : option (list (vect n)) := 
