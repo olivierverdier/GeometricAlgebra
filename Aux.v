@@ -70,10 +70,10 @@ Function dmap2 (a : A) (l1: list A) (l2: list B) {struct l2}: list C :=
   end.
 
 End Fold2.
-Implicit Arguments dhead[A].
-Implicit Arguments fold2[A B C].
-Implicit Arguments map2[A B C].
-Implicit Arguments dmap2[A B C].
+Arguments dhead[A].
+Arguments fold2[A B C].
+Arguments map2[A B C].
+Arguments dmap2[A B C].
 
 Section Perm.
 
@@ -152,7 +152,7 @@ Qed.
 
 End Perm.
 
-Implicit Arguments perm[A].
+Arguments perm[A].
 
 Section Uniq.
 
@@ -295,7 +295,7 @@ intros (x,(H1x,H2x)); right; exists x; auto with datatypes.
 Qed.
 
 
-Implicit Arguments uniq[A].
+Arguments uniq[A].
 
 (* Georges' trick for easy case analysis *)
 
@@ -303,7 +303,7 @@ Inductive eq_Spec (A: Type) (x y: A): bool -> Prop :=
  |eq_Spect:  x = y -> eq_Spec A x y true
  |eq_Specf: x <> y -> eq_Spec A x y false.
 
-Implicit Arguments eq_Spec[A].
+Arguments eq_Spec[A].
 
 (** Binomial Coefficient defined using Pascal's triangle *)
 Fixpoint bin (a b : nat) {struct a} : nat :=
