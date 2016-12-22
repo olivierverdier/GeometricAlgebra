@@ -4146,7 +4146,7 @@ induction n as [| n IH]; auto.
 destruct x; destruct y; rewrite !meetS.
 simpl dconj; simpl conj; Vfold n; rewrite !conjt, meetS, !IH, meet_scalr.
 apply f_equal2 with (f := @pair _ _); auto.
-rewrite conj_add, !IH; apply f_equal2 with (f := addE _); auto.
+rewrite conj_add, !IH; apply f_equal2 with (f := addE (vn_eparams n)); auto.
 rewrite dconjt, dconj_scal, meet_scalr, meet_scall, <-scal_multE; Krm1.
 rewrite scalE1, dconj_conj_swap; auto.
 Qed.
