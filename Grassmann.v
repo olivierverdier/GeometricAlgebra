@@ -2127,7 +2127,10 @@ simpl; intros x1 [Hx1 | Hx1]; subst; auto with datatypes.
 rewrite joinlS; auto; intros HH1; case Hdiff; rewrite HH1; auto.
 intros [| k lk] (i, (H1lk, (H2lk, (H3lk, H4lk)))); try discriminate.
 generalize (eqK_dec _ Hp k 0%f); case eqK; intros Hk; subst; auto.
-generalize H4lk; rewrite mprod_S, scalE0l, addE0l; auto; intros HH.
+generalize H4lk.
+rewrite (mprod_S (vn_eparams n)); auto.
+rewrite (scalE0l (vn_eparams n)); auto.
+rewrite  addE0l; auto; intros HH.
 simpl in H2lk; case H2lk; clear H2lk; intros H2lk; subst.
 case H3lk; auto.
 case Hdiff; injection H1lk.
@@ -2137,7 +2140,7 @@ intros l; case l; intros; try discriminate; auto.
 intros a l IH [| b l1] H1l1 H2l1.
 case H2l1; auto.
 generalize (eqK_dec _ Hp a 0%f); case eqK; intros Ha; simpl in Ha.
-rewrite mprod_S, Ha, scalE0l, addE0l; auto.
+rewrite (mprod_S (vn_eparams n)), Ha, (scalE0l (vn_eparams n)), addE0l; auto.
 intros HH [HH1 | HH1]; try (case H3lk; auto; fail).
 intros HH2; injection HH2; clear HH2; intros HH2.
 rewrite joinlS.
