@@ -824,12 +824,16 @@ Proof.
 generalize k; clear k.
 induction n as [| n IH]; simpl; auto.
 intros [|k] [|x [|]]; simpl; try (intros; discriminate); auto.
-  rewrite !mprod_S, !mprod0r, !addE0r; simpl; auto.
+rewrite (mprod_S (vn_eparams 0)); auto.
+  (* rewrite !mprod_S, !mprod0r, !addE0r; simpl; auto. *)
+  rewrite  !mprod0r, !addE0r; simpl; auto.
 rewrite multK1r; auto; intros _ HH k [HH1 | []]; subst; auto.
 intros _ _ k1 HH; case HH.
 intros [| k].
 rewrite base0; intros [| x []]; try (intros; discriminate); simpl.
-intros _; rewrite mprod_S, mprod0r; simpl; auto; Vfold n.
+intros _.
+rewrite (mprod_S (vn_eparams n.+1)); auto.
+rewrite mprod0r; simpl; auto; Vfold n.
 rewrite en_def, scalE0r, addE0l, addE0r, scalk, multK1r; auto.
 intros HH; injection HH; intros HH1 k [HK | []]; subst.
 apply injk with (1 := HH1); auto.
