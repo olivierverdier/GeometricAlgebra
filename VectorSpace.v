@@ -374,7 +374,7 @@ rewrite H2lk2; auto.
 Qed.
 
 (* How to generate the multiple product for a constant *)
-Function lgenk (n: nat) (k: K p) {struct n} : list (K p) :=
+Fixpoint lgenk (n: nat) (k: K p) {struct n} : list (K p) :=
   match n  with
     O => nil
   | 1 => k :: nil

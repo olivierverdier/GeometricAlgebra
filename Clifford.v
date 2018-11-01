@@ -1,5 +1,6 @@
-Require Import ArithRing Div2 Bool Even Setoid Min List Aux.
+Require Import ArithRing Div2 Bool Even Setoid Min List Aux Wf_nat.
 Require Import Field VectorSpace Kn Grassmann.
+
 
 Section Vect.
 
@@ -38,6 +39,7 @@ Canonical Structure vn_eparams (n : nat) :=
   Build_eparams (vect n) K [0] (eq p n) (add p n) (scal p n).
 
 Ltac Vfold n :=
+     change (VectorSpace.K p) with (K1 p);
      change (add p n) with (addE (gvp n));
      change (scal p n) with (scalE (gvp n));
      change (genk p n 0%f) with (E0 (gvp n)).
@@ -398,8 +400,6 @@ Fixpoint cliff_starb n b : kn n -> vect n -> vect n :=
        ((if b then c else (-c)%f) .* cliff_starb n1 b1 l1 y,
         (c * c)%f .* cliff_starb n1 b1 l1 x)
   end.
-
-Require Import Wf_nat.
 
 (* Actual definition of Clifford dual *)
 Definition cliff_star n l := cliff_starb n true l.

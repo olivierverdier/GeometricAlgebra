@@ -1,4 +1,4 @@
-Require Import List Eqdep_dec Compare Bool Field Field_tac.
+Require Import List Eqdep_dec Compare Bool Field Field_tac ZArith.
 Require Import VectorSpace Grassmann G3.
 
 Fixpoint natc (m n : nat) :=
@@ -743,7 +743,7 @@ rewrite (tsplit_c t1 t2).
 generalize e;
 elim (tsplit t1 t2); simpl; auto.
 intros e1; unfold elsprod; simpl; ring.
-intros (t3,t4) l4 IH1 e1.
+intros (s,t3,t4) l4 IH1 e1.
 unfold elsprod; simpl.
 rewrite IH1; auto.
 rewrite IH; auto.
@@ -780,10 +780,10 @@ Qed.
 
 Inductive rp (T : Type) := Stop (_ : T) | More (_ : T).
 Definition rp_val (T : Type) (x : rp T) := 
-match x with Stop y => y | More y => y end.
+match x with Stop _ y => y | More _ y => y end.
 
 Fixpoint iter_rp (T : Type) n f (v : rp T) := match v with
-| More r => match n with
+| More _ r => match n with
             | O => f r
             | S n1 => iter_rp T n1 f (iter_rp T n1 f v)
             end
@@ -994,7 +994,8 @@ replace ({k[c]} * (s2k s3 * {c[cc]}) * ({t[t3]} * ({l[accu]} * {l[l1]})))%f
 rewrite <-Hs3, H2s2; simpl.
 rewrite H1s1; simpl.
 rewrite (bracket_free _ HP {v[x]} {k[a]} {v[b]} {k[c]} {v[d]}); auto.
- ring.
+change (VectorSpace.K Pp) with K.
+ring.
 Qed.
  
 Fixpoint felim x a b c d e accu :=
@@ -1553,12 +1554,12 @@ intros (p1,_); auto.
 case ll2; clear ll2.
 case czerop; auto.
 case contraction_rule; auto.
-intros ((s1,t5),(s2,t6)); auto.
+intros ((s1,t5),(s2,t6,t7)); auto.
 generalize IH; case has_delta; auto.
 intros (p1,_); auto.
 case czerop; auto.
 case contraction_rule; auto.
-intros ((s1,t5),(s2,t6)); auto.
+intros ((s1,t5),(s2,t6,t7)); auto.
 generalize IH; case has_delta; auto.
 intros (p1,_); auto.
 generalize IH; case has_delta; auto.
@@ -1804,8 +1805,6 @@ apply resolve_c.
 Qed.
 
 End Generic.
-
-Require Import ZArith.
 
 Notation "'{' a ',' b ',' c '}'" := (Tuple _ a b c).
 
@@ -2076,7 +2075,8 @@ Definition ndo_auto_c i :=
   cscale_c czerop_c copp_c.
 
 
-End NatImplem.         
+End NatImplem.
+         
 
 (* Code taken from Ring *)
 
@@ -2086,47 +2086,47 @@ Inductive TBool : Set :=
                        
 Ltac IN a l :=
  match l with
- | (cons a ?l) => constr:RBtrue
+ | (cons a ?l) => constr:(RBtrue)
  | (cons _ ?l) => IN a l
- |  nil => constr:RBfalse
+ |  nil => constr:(RBfalse)
  end.
 
 Ltac AddFv a l :=
  match (IN a l) with
- | RBtrue => constr:l
+ | RBtrue => constr:(l)
  | _ => constr:(cons a l)
  end.
 
 Ltac Find_at a l :=
  match l with
- | nil  => constr:O
- | (cons a _) => constr:O
+ | nil  => constr:(O)
+ | (cons a _) => constr:(O)
  | (cons _ ?l) => let p := Find_at a l in eval compute in (S p)
  end.
 
 Ltac Cstl a l :=
   match l with (?l1,?l2) => 
-   let l3 := AddFv a l1 in constr:(l3 , l2) end.
+   let l3 := AddFv a l1 in constr:((l3 , l2)) end.
 
 Ltac Cstr a l :=
   match l with (?l1,?l2) => 
-   let l3 := AddFv a l2 in constr:(l1 , l3) end.
+   let l3 := AddFv a l2 in constr:((l1 , l3)) end.
 
 Ltac FV t fv :=
   match t with
   | (?t1 -> ?t2) => 
-    let fv1 := FV t1 fv in let fv2 := FV t2 fv1 in constr:fv2
+    let fv1 := FV t1 fv in let fv2 := FV t2 fv1 in constr:(fv2)
   | (bracket _ (p2v _ ?t1) (p2v _ ?t2) (p2v _ ?t3) = _) => 
     let fv1 := Cstl t1 fv in let fv2 := Cstl t2 fv1 in 
-    let fv3 := Cstl t3 fv2 in constr:fv3
+    let fv3 := Cstl t3 fv2 in constr:(fv3)
   | (inter_lines _ ?t1 ?t2 ?t3 ?t4 ?t5) => 
     let fv1 := Cstl t1 fv in let fv2 := Cstl t2 fv1 in 
     let fv3 := Cstl t3 fv2 in let fv4 := Cstl t4 fv3 in
-    let fv5 := Cstl t5 fv4 in constr:fv5
+    let fv5 := Cstl t5 fv4 in constr:(fv5)
   | (online1 _ ?t1 ?t2 ?t3 ?t4 ?t5) => 
     let fv1 := Cstl t1 fv in let fv2 := Cstr t2 fv1 in 
     let fv3 := Cstl t3 fv2 in let fv4 := Cstr t4 fv3 in
-    let fv5 := Cstl t5 fv4 in constr:fv5
+    let fv5 := Cstl t5 fv4 in constr:(fv5)
   end.
  
 Ltac GetHyp t fv1 fv2 :=
@@ -2162,17 +2162,15 @@ Ltac preProcess :=
 intuition;
 apply bracket0_collinear; auto;
 repeat
-match goal with H: (?H1 : Prop) |- _ =>
-  match H1 with
-  | (inter_lines _ _ _ _ _ _) => 
-    generalize H; clear H 
-  | (online ?F ?t1 ?t2 ?t3) =>
+(* this should be limited to Prop *)
+match goal with 
+  | H: (inter_lines _ _ _ _ _ _) |- _ => 
+      generalize H; clear H 
+  | H: (online ?F ?t1 ?t2 ?t3) |- _ =>
       let k1 := fresh "k" in
       let k2 := fresh "k" in
       case (online_def F HP t1 t2 t3 H); intros (k1, k2); 
       simpl fst; simpl snd; clear H
-  | _ => clear H
-  end
 end.
 
 Ltac doTac1 :=
@@ -2192,8 +2190,22 @@ match goal with |- ?H  =>
   | (?fv1,?fv2) =>
     let concl := GetConcl H fv1 in
     let hyps := GetHyps H fv1 fv2 in
-    generalize (ndo_auto_c (fun v => nth v fv2 0%f)
-                           (fun v => nth v fv1 (0%f,(0%f,0%f)))
+    vm_cast_no_check
+      (ndo_auto_c (fun v => nth v fv2 0%f)
+                           (fun v => nth v fv1 (0%f,(0%f,(0%f,tt))))
+                            10 hyps concl)
+  end
+end.
+
+Ltac doTac_debug :=
+match goal with |- ?H  =>
+  match FV H (nil : list (point K),nil : list K) with
+  | (?fv1,?fv2) =>
+    let concl := GetConcl H fv1 in
+    let hyps := GetHyps H fv1 fv2 in
+    generalize
+      (ndo_auto_c (fun v => nth v fv2 0%f)
+                           (fun v => nth v fv1 (0%f,(0%f,(0%f,tt))))
                             10 hyps concl);
     let ff := fresh "ff" in
     (set (ff := do_auto nat natc nat coef cadd czerop c0 copp cscale 10 hyps concl);
@@ -2202,15 +2214,14 @@ match goal with |- ?H  =>
     lazy zeta iota beta delta[interla intera c1 conep intere1 interl intert nth];
     let HH := fresh "HH" in 
       intros HH; apply HH
-    )
+   )
   end
 end.
 
 Ltac mTac := preProcess; doTac.
+Ltac mTac_debug := preProcess; doTac_debug.
 
 Section Examples.
-
-Set Virtual Machine.
 
 Lemma ex1 :
   forall p1 p2 p3 p4 p5 p6 p7 p8 p9 p10: point K,
@@ -2223,7 +2234,7 @@ Lemma ex1 :
  [p8 , p9 , p10] are_collinear.
 Proof.
  (* unfold inter_lines, online, collinear. *)
- mTac. 
+ mTac.
 Time Qed.
 
 Lemma ex2 :
@@ -2532,9 +2543,7 @@ Lemma ex22_proof :
  p10 is_the_intersection_of [p3,p4] and [p5,p7] -> 
  [p8,p9,p10] are_collinear.
 Proof. mTac. Time Qed.
-*)
 
-(*
 Lemma ex23_proof :
   forall p1 p2 p3 p4 p5 p6 p7: point K, 
   p5 is_the_intersection_of [p1,p2] and [p3,p4] ->

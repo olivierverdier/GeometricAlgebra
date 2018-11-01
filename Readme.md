@@ -1,6 +1,6 @@
 This is an update of the original project [GeometricAlgebra](http://www-sop.inria.fr/marelle/GeometricAlgebra/).
 
-The project should now be compatible with Coq 8.6, up to the file `Grassmann.v`.
+The project should now be compatible with Coq 8.8.2.
 
 Simply run `make` to compile the relevant files.
 
