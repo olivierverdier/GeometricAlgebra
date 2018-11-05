@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/thery/GeometricAlgebra.svg?branch=master)](https://travis-ci.org/thery/GeometricAlgebra)
+
 This is an update of the original project [GeometricAlgebra](http://www-sop.inria.fr/marelle/GeometricAlgebra/).
 
 The project should now be compatible with Coq 8.8.2.
