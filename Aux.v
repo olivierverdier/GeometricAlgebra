@@ -2,7 +2,6 @@ Require Import List Min Arith Div2.
 
 Notation "n .+1" := (S n)(at level 2, left associativity, format "n .+1"): nat_scope.
 
-
 (* Minus *)
 
 Lemma minus_match k1 k2: match k2 - k1 with O => k2 <= k1 | S _ => k1 < k2 end.
@@ -17,7 +16,7 @@ Qed.
 
 Section Exp.
 
-Function exp (n m: nat) {struct m}: nat := 
+Fixpoint exp (n m: nat) {struct m} : nat := 
   match m with O => 1 | 1 => n | (S m1) => n * exp n m1 end.
 
 Lemma exp0 n: exp n 0 = 1.
@@ -40,7 +39,7 @@ Variable f: A -> B -> C -> C.
 Definition dhead a (l : list A) :=
   match l with nil => a | b :: _ => b end.
 
-Function fold2 (l1: list A) (l2: list B) (c: C) {struct l1}: C :=
+Fixpoint fold2 (l1: list A) (l2: list B) (c: C) {struct l1}: C :=
   match l1, l2 with
     a::l3, b::l4 => fold2 l3 l4 (f a b c)
   | _, _ => c
@@ -48,7 +47,7 @@ Function fold2 (l1: list A) (l2: list B) (c: C) {struct l1}: C :=
 
 Variable g: A -> B -> C.
 
-Function map2 (l1: list A) (l2: list B) {struct l1}: list C :=
+Fixpoint map2 (l1: list A) (l2: list B) {struct l1}: list C :=
   match l1, l2 with
     a::l3, b::l4 => (g a b)::map2 l3 l4
   | _, _ => nil
@@ -62,7 +61,7 @@ induction l1 as [| a1 l1 IH]; intros [| a2 l2]; simpl; auto.
 Qed.
 
 
-Function dmap2 (a : A) (l1: list A) (l2: list B) {struct l2}: list C :=
+Fixpoint dmap2 (a : A) (l1: list A) (l2: list B) {struct l2}: list C :=
   match l1, l2 with
     a1::l3, b1 :: l4 => g a1 b1 :: dmap2 a l3 l4
   |    nil, b1 :: l4 =>  g a b1 :: dmap2 a nil l4

@@ -55,7 +55,7 @@ Structure fparamsProp: Type := {
  invKl: forall x: p, x <> 0 -> x * x^-1 = 1
 }.
 
-Function expK  (k: p) (n:nat) {struct n}: p := 
+Fixpoint expK  (k: p) (n:nat) {struct n}: p := 
   match n with O => 1 | (S n1) => k * expK k n1 end.
 
 Notation "x ^ k" := (expK x k) : field_scope.
@@ -310,8 +310,8 @@ Qed.
 Definition Z_to_K (z: Z) :=
   match z with
   | Z0 => 0
-  | Zpos _ => n_to_K (Zabs_nat z)
-  | Zneg _ => - (n_to_K (Zabs_nat z))
+  | Zpos _ => n_to_K (Z.abs_nat z)
+  | Zneg _ => - (n_to_K (Z.abs_nat z))
   end.
 
 Lemma Z_to_K_opp (z: Z): Z_to_K (-z)%Z = - Z_to_K z.
@@ -321,7 +321,7 @@ rewrite oppK0; auto.
 intros p1; rewrite opp_oppK; auto.
 Qed.
 
-Lemma Z_to_K_pos (z: Z): (0 <= z)%Z -> Z_to_K z = n_to_K (Zabs_nat z).
+Lemma Z_to_K_pos (z: Z): (0 <= z)%Z -> Z_to_K z = n_to_K (Z.abs_nat z).
 Proof.
 case z; simpl; auto.
 intros p1 H; contradict H; auto with zarith.
