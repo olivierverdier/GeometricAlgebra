@@ -15,6 +15,7 @@ Structure fparams: Type := {
 
 (* Recover the usual mathematical notations *)
 
+Declare Scope field_scope.
 Delimit Scope field_scope with f.
 
 Notation "x ?= y" := (eqK _ x y) (at level 70) : field_scope.

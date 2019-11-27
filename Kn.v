@@ -10,7 +10,9 @@ Hypothesis Hp : fparamsProp p.
 (* We recover the usual mathematical notation *)
 Notation "'K'" := (K p).
 
+Declare Scope kn_scope.
 Delimit Scope kn_scope with k.
+
 Open Scope vector_scope.
 Open Scope kn_scope.
 
@@ -18,7 +20,6 @@ Open Scope kn_scope.
 
 Fixpoint kn (n: nat): Set := 
   match n with O => unit | S n1 => (K * kn n1)%type end.
-
 
 (** We first build the functions of the vector space *)
 
@@ -103,7 +104,7 @@ induction n as [| n IH]; simpl; auto.
 intros k1 k2 (k, x); simpl in IH; rewrite (multK_assoc _ Hp), IH; auto.
 Qed.
 
-Hint Resolve fn.
+Hint Resolve fn : core.
 
 Ltac Kfold n :=
      change (add n) with (addE (vn_eparams n));
@@ -171,7 +172,7 @@ Inductive eql_t0 : list K -> list K -> Prop :=
 | eql_t0Nr: forall l, eql_t0 nil l -> eql_t0 nil (0%f :: l) 
 | eql_t0R: forall a l1 l2, eql_t0 l1 l2 -> eql_t0 (a :: l1) (a :: l2).
 
-Hint Constructors eql_t0.
+Hint Constructors eql_t0 : core.
 
 Lemma eql_refl l : eql_t0 l l.
 Proof. elim l; auto. Qed.
@@ -599,6 +600,8 @@ Qed.
 
 End Kn.
 
+Declare Scope Kn_scope.
+
 Notation " 'e_ p" := (gen _ _ p) (at level 8) : Kn_scope.
 Notation " [ k ] " := (genk _ _ k) (at level 9) : Kn_scope.
 Notation "a  [.]  b" := (pscal _ _ a b) (at level 40): Kn_scope.
@@ -606,4 +609,4 @@ Notation "a  [*]  b" := (kprod _ _ a b) (at level 40): Kn_scope.
 
 Delimit Scope Kn_scope with Kn.
 
-Hint Constructors eql_t0.
+Hint Constructors eql_t0 : core.

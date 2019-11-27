@@ -9,6 +9,7 @@ Variable p : params.
 (* The operations for scalar have the expected properties *)
 Hypothesis Hp : fparamsProp p.
 
+Declare Scope g_scope.
 Delimit Scope g_scope with g.
 Open Scope g_scope.
 Open Scope vector_scope.
@@ -44,7 +45,7 @@ Ltac Vfold n :=
      change (scal p n) with (scalE (gvp n));
      change (genk p n 0%f) with (E0 (gvp n)).
 
-Hint Resolve (fn _ Hp).
+Hint Resolve (fn _ Hp) : core.
 
 (* The geometric product (Clifford product)    *)
 (* the quadratic form is encoded as the list l *)

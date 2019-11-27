@@ -7,6 +7,7 @@ Variable p : params.
 (* The operations for scalar have the expected properties *)
 Hypothesis Hp : fparamsProp p.
 
+Declare Scope g_scope.
 Delimit Scope g_scope with g.
 Open Scope g_scope.
 Open Scope vector_scope.
@@ -108,7 +109,7 @@ induction n as [| n IH]; simpl.
 intros k1 k2 (l1, l2); simpl in IH; rewrite IH, IH; auto.
 Qed.
 
-Hint Resolve fn.
+Hint Resolve fn : core.
 
 Notation "1" := ([1]): g_scope.
 
@@ -320,7 +321,7 @@ intros [|k]; auto.
 rewrite !IH; auto.
 Qed.
 
-Hint Resolve homk0.
+Hint Resolve homk0 : core.
 
 Lemma hom0K n k : hom n 0 [k].
 Proof.
@@ -329,7 +330,7 @@ case eq0_spec; auto.
 intros HH; case HH; auto.
 Qed.
 
-Hint Resolve hom0K.
+Hint Resolve hom0K : core.
 
 Lemma const_hom n k x : hom n k x -> 0 < k -> 'C[x] = 0%f.
 Proof.
@@ -409,7 +410,7 @@ generalize H1 H3; do 2 (case eq0_spec; try (intros; discriminate));
   intros; subst; rewrite addE0l; auto.
 Qed.
 
-Hint Resolve add_hom.
+Hint Resolve add_hom : core.
 
 Lemma scal_hom n k1 k2 (x: vect n) : 
   hom n k1 x -> hom n k1 (k2 .* x).
@@ -425,7 +426,7 @@ generalize H1; case eq0_spec; try (intros; discriminate);
   intros; subst; rewrite scalE0r, eq0I; auto.
 Qed.
 
-Hint Resolve scal_hom.
+Hint Resolve scal_hom : core.
 
 (* Get homogeneity part *)
 Fixpoint get_hom (n m : nat) {struct n} : vect n -> vect n :=
@@ -718,8 +719,7 @@ induction n as [| n IH]; simpl; auto.
 rewrite IH, homk0; auto.
 Qed.
 
-Hint Resolve all_hom.
-
+Hint Resolve all_hom : core.
 
 (* Base of k vector *)
 Fixpoint base (n: nat) k:list (vect n) :=
@@ -1084,7 +1084,7 @@ intros []; auto; rewrite oppK0; auto.
 intros b; rewrite IH; rewrite IH; auto.
 Qed.
 
-Hint Rewrite conj0: GRm0.
+Hint Rewrite conj0 : GRm0.
 
 (* Conjugate of k is -k *)
 Lemma conjk n b k : [k] ^_ b=  if b then [-k] else ([k]: vect n).
@@ -1141,7 +1141,7 @@ generalize H1; case eq0_spec; intros Hx1 HH; try discriminate.
   rewrite Hx1, conj0, eq0I; auto.
 Qed.
 
-Hint Resolve conj_hom.
+Hint Resolve conj_hom : core.
 
 Lemma conjf_hom n k (M: vect n) : hom n k M -> M ^_'f = (- (1))^k .* M.
 Proof.
@@ -1224,7 +1224,7 @@ induction n as [| n IH]; simpl; try Vfold n.
 destruct x; rewrite IH, conj0, IH; Vrm0.
 Qed.
 
-Hint Rewrite join0l: GRm0.
+Hint Rewrite join0l : GRm0.
 
 (* x \/ 0  = 0 *)
 Lemma join0r n (x : vect n) : x ∨ 0 = 0.
@@ -1522,7 +1522,7 @@ rewrite <- Plus.plus_Snm_nSm.
 apply IH; auto.
 Qed.
 
-Hint Resolve join_hom.
+Hint Resolve join_hom : core.
 
 Lemma join_big n k1 k2 (x y : vect n) : 
   hom n k1 x -> hom n k2 y -> n < k1 + k2 -> x ∨ y = 0.
@@ -1874,7 +1874,7 @@ change (length (a::l1)) with (1 + length l1)%nat.
 apply join_hom; auto with datatypes.
 Qed.
 
-Hint Resolve joinl_hom1.
+Hint Resolve joinl_hom1 : core.
 
 Lemma joinl_swap n (a b: vect n) l: 
  cbl _ (base n 1) a ->  cbl _ (base n 1) b ->
@@ -2225,7 +2225,7 @@ induction n as [| n IH]; simpl; Grm0; Vfold n.
 destruct lf; rewrite IH; Grm0.
 Qed.
 
-Hint Rewrite contra0r: GRm0.
+Hint Rewrite contra0r : GRm0.
 
 Lemma contra0l n (x:vect n) : #<0, x># = 0.
 Proof.
@@ -2320,7 +2320,7 @@ assert (Hm2: hom n k1.+2 M2); [generalize H; repeat (case hom; auto) | clear H];
 Vfold n; rewrite scal_hom, add_hom; auto.
 Qed.
 
-Hint Resolve contra_hom.
+Hint Resolve contra_hom : core.
 
 Lemma contra_hom0 n lf M : hom n 0 M -> #<lf , M># = 0.
 Proof. intros H; rewrite (hom0E _ _ H); apply contrak. Qed.
@@ -2892,7 +2892,7 @@ rewrite mprod0r; apply homk0.
 rewrite mprod_S; auto with datatypes.
 Qed.
 
-Hint Resolve mprod_hom.
+Hint Resolve mprod_hom : core.
 
 Definition is_decomposable n M := exists l, decomposable n l M.
 
@@ -3042,7 +3042,7 @@ rewrite homk0.
 simpl; rewrite IH; auto with arith.
 Qed.
 
-Hint Resolve one_factor_hom.
+Hint Resolve one_factor_hom : core.
  
 Lemma one_factor_zero n k1 k2 (x: vect n) :
  k2 < k1 -> hom n k1 x -> one_factor n k2 x = 0 -> x = 0.
@@ -3145,7 +3145,7 @@ rewrite (hom0E _ _ Hx), contra_hom0; Grm0.
 apply IH; auto.
 Qed.
 
-Hint Resolve mcontra_hom.
+Hint Resolve mcontra_hom : core.
 
 Lemma mcontra_hom0 n lfs M : lfs <> nil -> hom n 0 M -> #<<lfs , M>># = 0.
 Proof.
@@ -3653,7 +3653,7 @@ replace n1.+1 with (n - k)%nat; auto with arith.
 rewrite Hn1, Minus.minus_plus; auto.
 Qed.
 
-Hint Resolve dual_hom.
+Hint Resolve dual_hom : core.
 
 Lemma dual_scal n k (v: vect n) : '@(k .* v) = k .* '@v.
 Proof.
@@ -3916,7 +3916,7 @@ generalize H1; case eq0_spec; intros Hx1 HH; try discriminate.
   rewrite Hx1, dconj0, eq0I; auto.
 Qed.
 
-Hint Resolve dconj_hom.
+Hint Resolve dconj_hom : core.
 
 Lemma dconjf_joinl n (x y: vect n) : (x ∨ y) ^d_'f = x ^d_'f ∨ y ^_'f.
 Proof.
@@ -4286,7 +4286,7 @@ rewrite Plus.plus_assoc, (Plus.plus_comm (k1 + k2)); auto.
 rewrite <-Minus.minus_plus_simpl_l_reverse; auto.
 Qed.
 
-Hint Resolve meet_hom.
+Hint Resolve meet_hom : core.
 
 Lemma meetkl0 n k1 k2 x : hom n k1 x -> n <> k1 -> [k2] ∧ x = 0.
 Proof.
