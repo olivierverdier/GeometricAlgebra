@@ -1,5 +1,5 @@
 Require Import Div2 Bool Even Setoid Min List Aux Field VectorSpace Grassmann.
-Require Import Field_tac.
+Require Import Field_tac Ring_tac.
 
 Section Vect.
 
@@ -10,6 +10,7 @@ Hypothesis FT:
   @field_theory (Field.K F) (v0 F) (v1 F) (addK F) (multK F)
         (fun x y => (addK F) x (oppK F y)) (oppK F) 
         (fun x y => (multK F) x (invK F y)) (invK F) (@Logic.eq F).
+Add Ring Rfth : (F_R FT).
 Add Field Kfth : FT.
 
 
