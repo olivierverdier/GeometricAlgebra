@@ -45,7 +45,8 @@ Ltac Vfold n :=
      change (scal p n) with (scalE (gvp n));
      change (genk p n 0%f) with (E0 (gvp n)).
 
-Hint Resolve (fn _ Hp) : core.
+Definition fnHp := fn _ Hp.
+Hint Resolve fnHp : core.
 
 (* The geometric product (Clifford product)    *)
 (* the quadratic form is encoded as the list l *)

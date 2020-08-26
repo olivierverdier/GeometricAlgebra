@@ -113,7 +113,7 @@ Fixpoint intere (e :expr) :=
   end.
 Notation "{e[ x ]}" := (intere x).
 
-Fixpoint intere1 (e :expr) :=
+Definition intere1 (e :expr) :=
   match e with nil => 0%f | (c,t ::nil)::nil =>
     if conep c then {t[t]} else intere e 
   | _ => intere e end.

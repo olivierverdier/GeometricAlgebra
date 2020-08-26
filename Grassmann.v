@@ -5020,6 +5020,7 @@ Definition f: vparamsProp (Kn.v_eparams p) := (Kn.fn p Hp p).
 
 End Vect.
 
+Declare Scope Gn_scope.
 Delimit Scope Gn_scope with Gn.
 Notation " 'e_ p" := (gen _  _ p) : Gn_scope.
 Notation " [ k ] " := (genk _ _ k) (at level 9) : Gn_scope.
