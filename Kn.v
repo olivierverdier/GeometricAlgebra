@@ -609,4 +609,4 @@ Notation "a  [*]  b" := (kprod _ _ a b) (at level 40): Kn_scope.
 
 Delimit Scope Kn_scope with Kn.
 
-Hint Constructors eql_t0 : core.
+Global Hint Constructors eql_t0 : core.

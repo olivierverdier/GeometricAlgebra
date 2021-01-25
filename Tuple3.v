@@ -555,7 +555,7 @@ match l with
 |   nil => t1 :: l
 | t2::l1 => match tcompare t1 t2 with
                   |  Gt => t2 :: linsert t1 l1
-                  | res => t1 :: l
+                  | _ => t1 :: l
                   end
 end.
 
