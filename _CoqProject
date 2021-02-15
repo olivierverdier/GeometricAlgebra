@@ -1,6 +1,7 @@
 -R . GeometricAlgebra
 -arg -w -arg -notation-overridden
 -arg -w -arg -redundant-canonical-projection
+-arg -w -arg -ambiguous-paths
 
 Aux.v
 Field.v

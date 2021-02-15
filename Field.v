@@ -15,6 +15,7 @@ Structure fparams: Type := {
 
 (* Recover the usual mathematical notations *)
 
+Declare Scope field_scope.
 Delimit Scope field_scope with f.
 
 Notation "x ?= y" := (eqK _ x y) (at level 70) : field_scope.
@@ -340,7 +341,6 @@ assert (HH1:
    Z_to_K (z2 - z1) = Z_to_K z2 + - Z_to_K z1).
 intros z3 z4 Hz3z4.
 rewrite !Z_to_K_pos, Zabs_nat_Zminus, n_to_K_minus; auto with zarith.
-apply Zabs_nat_le; auto.
 case (Zle_or_lt 0 z1); case (Zle_or_lt 0 z2); intros H2 H1; auto.
 case (Zle_or_lt 0 (z1 + z2)); intros H3.
 replace (z1 + z2)%Z with (z1 - (-z2))%Z; try ring.
