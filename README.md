@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/thery/GeometricAlgebra.svg?branch=master)](https://travis-ci.org/thery/GeometricAlgebra)
+[![Build Status](https://travis-ci.com/thery/GeometricAlgebra.svg?branch=master)](https://travis-ci.com/thery/GeometricAlgebra)
 
 This is an update of the original project [GeometricAlgebra](http://www-sop.inria.fr/marelle/GeometricAlgebra/).
 
