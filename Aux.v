@@ -354,7 +354,7 @@ Coercion b2Prop (x : bool) := x = true.
 Lemma b2PropT: b2Prop true.
 Proof. exact (refl_equal true). Qed.
 
-Hint Resolve b2PropT.
+Global Hint Resolve b2PropT : core.
 
 Require Import Bool.
 

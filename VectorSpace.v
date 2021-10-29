@@ -9,6 +9,7 @@ Structure eparams: Type := {
  scalE : (K stype) -> E -> E   (* scalar *)
 }.
 
+Declare Scope vector_scope.
 Delimit Scope vector_scope with v.
 
 Notation "x ?= y" := (eqE _ x y) (at level 70): vector_scope.
