@@ -54,7 +54,7 @@ Fixpoint map2 (l1: list A) (l2: list B) {struct l1}: list C :=
   end.
 
 Lemma map2_length l1 l2:
-  length (map2 l1 l2) = min (length l1) (length l2).
+  length (map2 l1 l2) = Nat.min (length l1) (length l2).
 Proof.
 generalize l2; clear l2.
 induction l1 as [| a1 l1 IH]; intros [| a2 l2]; simpl; auto.
@@ -319,7 +319,7 @@ Qed.
 
 Lemma bin_1: forall (n : nat),  bin n 1 = n.
 intros; induction n as [|n IH]; simpl; auto.
-rewrite bin_0, IH, Plus.plus_comm; auto.
+rewrite bin_0, IH, Nat.add_comm; auto.
 Qed.
 
 Lemma bin_more: forall (n m : nat), n < m ->  bin n m = 0.
@@ -365,24 +365,24 @@ Qed.
 
 (* Some facts about div2 *)
 
-Lemma div2_double_p n m : div2 (2 * n + m) = n + div2 m.
+Lemma div2_double_p n m : Nat.div2 (2 * n + m) = n + Nat.div2 m.
 Proof.
 induction n as [| n IH]; simpl; auto.
 rewrite <-plus_n_Sm; simpl in IH |- *.
 rewrite IH; auto.
 Qed.
 
-Lemma div2_prop n: n + div2 (n * (n - 1)) = div2 (n.+1 * n).
+Lemma div2_prop n: n + Nat.div2 (n * (n - 1)) = Nat.div2 (n.+1 * n).
 Proof.
 assert (F1: forall n, (n + n * n = 2 * n + n * (n - 1))%nat).
-intros [|n1]; simpl; auto.
-rewrite <-!Minus.minus_n_O; ring.
+  intros [|n1]; simpl; auto.
+  rewrite Nat.sub_0_r; ring.
 induction n; simpl; auto.
 rewrite <-plus_n_Sm.
-rewrite <-Minus.minus_n_O.
+rewrite Nat.sub_0_r.
 rewrite F1, div2_double_p.
-rewrite !Plus.plus_assoc; replace (n + n) with (2 * n); try ring.
-rewrite div2_double_p, <-(Mult.mult_comm (n.+1)), <-IHn.
+rewrite !Nat.add_assoc; replace (n + n) with (2 * n); try ring.
+rewrite div2_double_p, <-(Nat.mul_comm (n.+1)), <-IHn.
 ring.
 Qed.
 
@@ -394,8 +394,8 @@ exists 0%nat; auto.
 intros m2 _ (k, Hk); rewrite Hk; exists k.+1; auto.
 intros H; case (F1 _ _ H).
 intros k Hk; subst.
-rewrite (Plus.plus_comm k), Minus.minus_plus.
-rewrite (Plus.plus_comm n), Minus.minus_plus; auto.
+rewrite Nat.add_sub.
+rewrite (Nat.add_comm), Nat.add_sub; auto.
 Qed.
 
 Lemma minus0_le m n: m <= n -> m - n = 0.

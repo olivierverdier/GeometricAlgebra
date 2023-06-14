@@ -1,0 +1,42 @@
+# This file was generated from `meta.yml`, please do not edit manually.
+# Follow the instructions on https://github.com/coq-community/templates to regenerate.
+
+opam-version: "2.0"
+maintainer: "thery@sophia.inria.fr"
+version: "dev"
+
+homepage: "https://github.com/thery/GeometricAlgebra"
+dev-repo: "git+https://github.com/thery/GeometricAlgebra.git"
+bug-reports: "https://github.com/thery/GeometricAlgebra/issues"
+license: "MIT"
+
+synopsis: "Geometric Algebra"
+description: """
+This is an update of the original project 
+  [GeometricAlgebra](http://www-sop.inria.fr/marelle/GeometricAlgebra/).
+The project should now be compatible with Coq 8.17.0.
+
+Simply run `make` to compile the relevant files.
+
+This is the content of the old Readme:
+
+>This archive contains all the material of the formalisation of our Grassman
+>Cayley and Clifford formalisation. It has been developped with Coq 8.3
+>To compile it, a simple make should be enough
+>
+>Laurent.Fuchs@sic.univ-poitiers.fr
+>Laurent.Thery@inria.fr"""
+
+build: [make "-j%{jobs}%"]
+install: [make "install"]
+depends: [
+  "coq" {(>= "8.17")}
+]
+
+tags: [
+  "keyword:geometric algebra"
+  "logpath:GeometricAlgebra"
+]
+authors: [
+  "Laurent Théry"
+]

@@ -418,7 +418,7 @@ simpl In; intros [H1 | H1].
   rewrite mprod_S; rewrite scalE0l; auto; rewrite addE0l; auto.
 intros x y Hcx (ks1, (Hlks1, Hks1)) Hcy (ks2, (Hlks2, Hks2)).
 exists (map2 (fun k1 k2 => (k1 + k2)%f) ks1 ks2); split.
-rewrite map2_length; rewrite min_l; auto.
+rewrite map2_length; rewrite PeanoNat.Nat.min_l; auto.
 rewrite Hlks1; rewrite Hlks2; auto with arith.
 rewrite addE_mprod; try rewrite Hks1; try rewrite Hks2; auto.
 rewrite Hlks1; auto.

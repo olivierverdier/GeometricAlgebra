@@ -202,15 +202,25 @@ rewrite multK1l; auto.
 rewrite Hrec, multK_assoc; auto.
 Qed.
 
-Lemma expKm1_even n: even n -> (-(1))^ n = 1
-with expKm1_odd n: odd n -> (-(1))^ n = -(1).
+Lemma expKm1_even n: Nat.even n -> (-(1))^ n = 1.
 Proof.
-intros H; elim H; simpl; auto; clear n H.
-intros n H; rewrite expKm1_odd; auto.
-rewrite <-opp_multKr, multK1r, opp_oppK; auto.
-intros H; elim H; simpl; auto; clear n H.
-intros n H; rewrite expKm1_even; auto.
-rewrite multK1r; auto.
+apply (Nat.strong_right_induction  (fun n => Nat.even n -> (- (1)) ^ n = 1) 0).
+2: auto with arith.
+intros [|[|n1]] _ IH; simpl; auto.
+  discriminate.
+intros H1; rewrite IH; simpl; auto with arith.
+rewrite <-!opp_multKl, <-opp_multKr, !multK1r, opp_oppK; auto.
+Qed.
+
+Lemma expKm1_odd n: Nat.odd n -> (-(1))^ n = -(1).
+Proof.
+apply (Nat.strong_right_induction (fun n => Nat.odd n -> (- (1)) ^ n = -(1)) 0).
+2: auto with arith.
+intros [|[|n1]] _ IH; unfold Nat.odd; simpl; auto.
+  discriminate.
+  rewrite multK1r; auto.
+intros H1; rewrite IH; simpl; auto with arith.
+rewrite <-!opp_multKl, <-!opp_multKr, !multK1r, opp_oppK; auto.
 Qed.
 
 Lemma expKm1_sub m n: m <= n -> (-(1))^ (n - m) = (-(1))^ (n + m).
@@ -218,12 +228,13 @@ Proof.
 intros H.
 apply sym_equal; rewrite <-multK1l; auto.
 pattern (v1 p) at 2; rewrite <-expK2m1 with (n:= m).
-rewrite <-!expK_add, <-Plus.plus_assoc, <-Minus.le_plus_minus, Plus.plus_comm;
-  auto.
+rewrite <-!expK_add, <-Nat.add_assoc.
+rewrite (Nat.add_comm m (n - m)), Nat.sub_add; auto.
+rewrite Nat.add_comm; auto.
 Qed.
 
 Lemma expKm1_2 n: (-(1))^ (2 * n) = 1.
-Proof. apply expKm1_even; auto with arith. Qed.
+Proof. now apply expKm1_even; rewrite Nat.even_mul. Qed.
 
 Lemma expKm1_2E n m: (-(1))^ (2 * n + m) = (-(1))^ m.
 Proof. rewrite expK_add, expKm1_2, multK1l; auto. Qed.

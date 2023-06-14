@@ -1,3 +1,5 @@
+
+Require Import PeanoNat.
 Require Import ArithRing Div2 Bool Even Setoid Min List Aux Field VectorSpace Kn.
 
 Section Vect.
@@ -767,7 +769,7 @@ Proof.
 generalize k; clear k.
 induction n as [| n IH]; simpl base; intros [| k]; auto.
 rewrite base0; auto.
-rewrite app_length, !map_length, !IH, bin_def, Plus.plus_comm; auto.
+rewrite app_length, !map_length, !IH, bin_def, Nat.add_comm; auto.
 Qed.
 
 Lemma base_lift n k :  incl (map (lift n) (base n k)) (base n.+1 k).
@@ -785,7 +787,10 @@ destruct v as [v1 v2].
 rewrite base0, en_def; simpl.
 intros _ [H1|[]]; injection H1; intros; subst.
 rewrite eq0I, hom0K; auto.
-intros HH; case (Lt.le_lt_or_eq k n); auto with arith; intros H1 H2; subst.
+intros HH; apply Nat.lt_eq_cases in HH.
+destruct HH as [H1|H1]; auto with arith; intros H2; subst.
+2: assert (k = n) by auto with arith; subst.
+assert (H1' : k < n) by auto with arith.
 case (in_app_or _ _ _ H2); rewrite in_map_iff;
   intros (v1, ([],Hv1)); simpl.
 rewrite IH, homk0; auto with arith.
@@ -1518,7 +1523,7 @@ assert (Hy2: hom n k2.+1 y2).
   generalize HH2; rewrite Hy1; auto.
 rewrite add_hom; auto.
 apply (IH _ _ k1.+1 k2.+1); auto.
-rewrite <- Plus.plus_Snm_nSm.
+rewrite <- Nat.add_succ_comm.
 apply IH; auto.
 Qed.
 
@@ -1865,7 +1870,6 @@ Lemma joinl_hom1 n l :
  (forall x, In x l -> hom n 1 x) -> hom n (length l) (joinl n l).
 Proof.
 elim l; auto.
-intros; simpl; apply homk0.
 intros a l1 IH H1.
 case (list_case _ l1); intros Hl1.
 subst; simpl; auto with datatypes.
@@ -2454,7 +2458,8 @@ rewrite <- (multK_assoc _ Hp (- (1))%f), multK_m1_m1, multK1l, expK2m1, multK1r;
 rewrite (IH _ _ k1.+1 k2.+1); auto.
 Qed.
 
-Lemma join_hom_odd n k x : (1+1 <> (0: K))%f -> hom n k x -> odd k -> x ∨ x = 0.
+Lemma join_hom_odd n k x : (1+1 <> (0: K))%f -> hom n k x -> 
+      Nat.odd k -> x ∨ x = 0.
 Proof.
 intros H2 Hx Hk.
 case (scalE_integral _ (fn n) (1 + 1)%f (x ∨ x)); auto.
@@ -2462,10 +2467,10 @@ case (scalE_integral _ (fn n) (1 + 1)%f (x ∨ x)); auto.
 rewrite scal_addEl, scalE1; auto.
 pattern (x ∨ x) at 2; rewrite (join_hom_com n k k x x); auto.
 rewrite expKm1_odd, scal_addE0; auto.
-apply odd_mult; auto.
+now rewrite Nat.odd_mul, Hk.
 Qed.
 
-Lemma join_hom_id n k x : hom n k x -> odd k ->  x ∨ x = 0.
+Lemma join_hom_id n k x : hom n k x -> Nat.odd k ->  x ∨ x = 0.
 Proof.
 generalize k; clear k.
 induction n as [| n IH]; simpl; try Vfold n.
@@ -2478,8 +2483,8 @@ intros Ho; rewrite (IH _ k.+1); auto.
 rewrite conjf_hom with (k := S k); auto.
 rewrite expKm1_odd, join_scall, (join_hom_com n k k.+1 x y),
         expKm1_even, scalE1, scal_addE0; auto.
-apply even_mult_l.
-apply odd_plus_even_inv_r with 1%nat; auto; repeat constructor; auto.
+rewrite Nat.odd_succ in Ho.
+now rewrite Nat.even_mul, Nat.even_succ, Ho.
 Qed.
 
 Lemma is_vector_space_swap n x l :
@@ -2888,7 +2893,6 @@ generalize k l2; clear k l2.
 induction l1 as [| a l1 IH].
 intros; rewrite mprod0l; apply homk0.
 intros k [| b l2] H; auto.
-rewrite mprod0r; apply homk0.
 rewrite mprod_S; auto with datatypes.
 Qed.
 
@@ -3139,7 +3143,7 @@ Lemma mcontra_hom n k (x: vect n) l :
 Proof.
 generalize k x; clear k x; induction l as [| a l IH];
   intros k x Hx; simpl.
-rewrite <- Minus.minus_n_O; auto.
+rewrite Nat.sub_0_r; auto.
 destruct k as [| k]; simpl.
 rewrite (hom0E _ _ Hx), contra_hom0; Grm0.
 apply IH; auto.
@@ -3202,7 +3206,8 @@ rewrite map_length; auto.
 rewrite one_factor_zero with (k1 := k1) (3 := H1x2); auto with arith.
 generalize lift_mcontra; unfold lift; intros HH1;
  rewrite HH1, H1lf1; auto.
-case (IH _ _ _ (Lt.lt_S_n _ _ Hlt) Hx1).
+apply Nat.succ_lt_mono in Hlt.
+ case (IH _ _ _ Hlt Hx1).
 intros lfs1  (H1lfs1, H2lfs1).
 exists ((1%f, 0):: (map (liftk n) lfs1 : list (K * kn n))); simpl; Vfold n; split.
 rewrite map_length; auto.
@@ -3323,7 +3328,7 @@ replace 1%nat with (length l - length ll)%nat.
 apply mcontra_hom; auto.
 rewrite H1ll; destruct l; simpl length; auto with arith.
 intros; simpl length; simpl pred; 
-  rewrite <- Minus.minus_Sn_m, <-Minus.minus_n_n; auto.
+  rewrite Nat.sub_succ_l, Nat.sub_diag; auto.
 Qed.
 
 Lemma decomp_one_factor0 n (l: list (vect n)) M :
@@ -3400,7 +3405,7 @@ intros HH1; case Hv; auto.
 assert (F2: hom n 1 (one_factor n k.+1 v)).
 replace 1%nat with (k.+2 - k.+1)%nat.
 apply one_factor_hom; auto.
-rewrite <-Minus.minus_Sn_m, <-Minus.minus_n_n; auto with arith.
+rewrite Nat.sub_succ_l, Nat.sub_diag; auto with arith.
 assert (F3: v = one_factor n k.+1 v ∨ factor n (one_factor n k.+1 v) v).
 simpl; apply factor_factor; auto.
 intros HH; case Hv; apply (one_factor_zero n k.+2 k.+1); auto.
@@ -3629,7 +3634,7 @@ Qed.
 
 Lemma dual_hom n k v : hom n k v -> hom n (n - k) '@v.
 Proof.
-case (Lt.le_or_lt k n).
+case (Nat.le_gt_cases k n).
 2: intros Hi Hh; rewrite (hom_lt _ _ _ Hi Hh), dual0, homk0; auto.
 generalize k v; induction n as  [| n IH]; simpl; auto; clear k v.
 intros [| k] (x,y) H; rewrite !andbP; intros (H1,H2).
@@ -3638,19 +3643,19 @@ pattern n at 2; replace n with (n - 0)%nat; auto with arith.
 generalize H1; case eq0_spec; intros; [subst | discriminate].
 rewrite dual0, homk0; auto.
 assert (H3: k <= n); auto with arith.
-generalize (Minus.le_plus_minus _ _ H3).
+generalize (Nat.sub_add _ _ H3).
 case (n - k)%nat.
-rewrite Plus.plus_0_r; intros; subst.
+rewrite Nat.add_0_l; intros; subst n.
 rewrite (hom_lt k k.+1 y), conj0, dual0, eq0I; auto with arith.
 split; auto.
 replace 0%nat with (k - k)%nat; auto with arith.
 intros n1 Hn1; split; try apply conj_hom.
 replace n1 with (n - S k)%nat; auto with arith.
 apply IH; auto with arith.
-rewrite Hn1, <-Plus.plus_Snm_nSm; auto with arith.
-rewrite Hn1, <-Plus.plus_Snm_nSm; auto with arith.
+rewrite <-Hn1, Nat.add_succ_comm; auto with arith.
+now rewrite <-Hn1, Nat.add_succ_comm, Nat.add_sub.
 replace n1.+1 with (n - k)%nat; auto with arith.
-rewrite Hn1, Minus.minus_plus; auto.
+now rewrite <-Hn1, Nat.add_sub.
 Qed.
 
 Hint Resolve dual_hom : core.
@@ -3683,7 +3688,7 @@ rewrite (conjf_hom _ _ _ H2), !dual_scal, (IH _ _ H2).
 assert (H3:= dual_hom _ _ _ H1).
 rewrite (conjf_hom _ _ _ H3), dual_scal, (IH _ _ H1).
 apply f_equal2 with (f := @pair _ _); auto.
-case (Lt.le_or_lt k n); intros Hkn.
+case (Nat.le_gt_cases k n); intros Hkn.
 2: rewrite hom_lt with (2:= H1); Grm0.
 rewrite expKm1_sub, <-!scal_multE, <-!expK_add; auto.
 replace ((k.+1 * n .+2)%nat) with (2 + (n + k + k * n.+1))%nat by ring.
@@ -3708,7 +3713,7 @@ Proof.
 induction n as [|n IH]; simpl; Krm1.
 assert (F1: hom n 0 1) by apply hom0K.
 assert (F2: hom n n '@1).
-  generalize (dual_hom _ _ _ F1); rewrite <-Minus.minus_n_O; auto.
+  generalize (dual_hom _ _ _ F1); rewrite Nat.sub_0_r; auto.
 rewrite (conjf_hom _ _ _ F1), dual_scal, IH, scalE1, dual0; auto.
 Qed.
 
@@ -3729,7 +3734,7 @@ Qed.
 Lemma dual_base n k v :
   In v (base n k) -> In '@v (base n (n - k)) \/ In ((-(1)) .* '@v) (base n (n - k)).
 Proof.
-case (Lt.le_or_lt k n).
+case (Nat.le_gt_cases k n).
 2: intros H; rewrite base_lt_nil; auto; intros HH; inversion HH.
 generalize k; induction n as  [| n IH]; simpl; auto; clear k; try Vfold n.
 intros [| k] H; auto with arith.
@@ -3739,9 +3744,9 @@ intros [H1 | []]; injection H1; intros; subst.
 rewrite dual0, en_def, conjk, dual1; Vrm0.
 left; apply in_or_app; left; rewrite base_n; simpl; auto with datatypes.
 assert (H3: k <= n); auto with arith.
-generalize (Minus.le_plus_minus _ _ H3).
+generalize (Nat.sub_add _ _ H3).
 case (n - k)%nat.
-rewrite Plus.plus_0_r; intros Hn H1; subst.
+rewrite Nat.add_0_l; intros Hn H1; subst n.
 rewrite base_n, base_lt_nil in H1; auto with arith.
 simpl in H1; case H1; [intros H2 | intros []].
 injection H2; intros; subst.
@@ -3751,18 +3756,18 @@ change (0:vect k, 1: vect k) with (lift k 1).
 apply in_map; rewrite base0, en_def; auto with datatypes.
 intros k1 Hk1 H1.
 assert (H4: k.+1 <= n); auto with arith.
-  rewrite Hk1, <-plus_n_Sm; auto with arith.
+  rewrite <-Hk1, Nat.add_succ_comm; auto with arith.
 replace k1.+1 with (n - k)%nat.
-  2: rewrite Hk1, Minus.minus_plus; auto.
+  2: now rewrite <-Hk1, Nat.add_sub.
 replace k1 with (n - k.+1)%nat.
-  2: rewrite Hk1, <-Plus.plus_Snm_nSm, Minus.minus_plus; auto.
+  2: rewrite <-Hk1, Nat.add_succ_comm, Nat.add_sub; auto.
 case (in_app_or _ _ _ H1).
 rewrite in_map_iff; intros [u (H1u,H2u)].
 injection H1u; intros Hv1 HV1; subst x y; rewrite conj0, dual0.
 Vfold n; Vrm0.
 case (IH _ _ H3 H2u); auto.
 intros Hin.
-assert (Hh := base_hom _ _ _  (Minus.le_minus _ _) Hin).
+assert (Hh := base_hom _ _ _  (Nat.le_sub_l _ _) Hin).
 left; apply in_or_app; right; apply (in_map (lift n)); auto.
 right; apply in_or_app; right; apply (in_map (lift n)); simpl; auto.
 rewrite in_map_iff; intros [u (H1u,H2u)].
@@ -3772,14 +3777,18 @@ Vfold n; Vrm0.
 case (IH _ _ H4 H2u); auto; intros Hin;
   rewrite (conjf_hom n k.+1); try apply base_hom; auto;
   rewrite dual_scal;
-  case (even_or_odd (k.+1)); intros H2; simpl stype.
+  case (Nat.Even_or_Odd (k.+1)); intros H2; simpl stype.
+apply Nat.even_spec in H2.
 rewrite expKm1_even with (2 := H2), scalE1; auto.
 left; apply in_or_app; left; apply (in_map (dlift n)); auto.
+apply Nat.odd_spec in H2.
 rewrite expKm1_odd with (2:= H2); auto.
 rewrite <-scal_multE, multK_m1_m1, scalE1; auto.
 right; apply in_or_app; left; apply (in_map (dlift n)); auto.
+apply Nat.even_spec in H2.
 rewrite expKm1_even with (2 := H2), scalE1; auto.
 right; apply in_or_app; left; apply (in_map (dlift n)); auto.
+apply Nat.odd_spec in H2.
 rewrite expKm1_odd with (2 := H2); auto.
 left; apply in_or_app; left; apply (in_map (dlift n)); auto.
 Qed.
@@ -3865,7 +3874,7 @@ intros [| k]; destruct M; rewrite andbP; intros (HM1, HM2);
   rewrite dconjt; simpl; Vfold n; Krm1.
 generalize HM1; case eq0_spec; try (intros; discriminate); auto.
 intros H1; rewrite H1, (IH _ _ HM2); simpl; Vfold n; Krm1.
-rewrite dconj0, Plus.plus_0_r, <-scal_multE; Krm1; Vrm0.
+rewrite dconj0, Nat.add_0_r, <-scal_multE; Krm1; Vrm0.
 rewrite IH with (1 := HM1),IH with (1 := HM2); auto.
 rewrite <-scal_multE, <-plus_n_Sm; simpl expK; Krm1.
 Qed.
@@ -3973,8 +3982,8 @@ Lemma dconjk n b k :
   [k] ^d_ b = (if b then [(-(1))^n.+1 * k] else [(-(1))^n * k]:vect n).
 Proof.
 case b; auto.
-rewrite dconjt_hom with (k := 0%nat), Plus.plus_0_r, scalk; auto.
-rewrite dconjf_hom with (k := 0%nat), Plus.plus_0_r, scalk; auto.
+rewrite dconjt_hom with (k := 0%nat), Nat.add_0_r, scalk; auto.
+rewrite dconjf_hom with (k := 0%nat), Nat.add_0_r, scalk; auto.
 Qed.
 
 Lemma dconj_const n b (x: vect n) :
@@ -4017,14 +4026,15 @@ Proof. unfold dconst; rewrite dual_add, const_add; auto. Qed.
 Lemma dconst_hom n k x : hom n k x -> n <> k -> 'dC[x] = 0%f.
 Proof.
 intros H1 H2.
-case (Lt.le_or_lt n k); intros H3.
-case (Lt.le_lt_or_eq _ _ H3); intros H4; auto.
+case (Nat.le_gt_cases n k); intros H3.
+apply Nat.lt_eq_cases in H3; destruct H3 as [H4 | H4]; auto.
 rewrite hom_lt with (2 := H1), dconst0; auto.
 case H2; auto.
 unfold dconst; apply const_hom with (k := (n - k)%nat).
 apply dual_hom; auto.
-apply Plus.plus_lt_reg_l with k.
-rewrite Plus.plus_0_r, <-Minus.le_plus_minus; auto with arith.
+apply Nat.add_lt_mono_l with k.
+rewrite Nat.add_0_r, Nat.add_comm,
+        Nat.sub_add; auto with arith.
 Qed.
 
 Lemma homn_all n x : hom n n x -> x = 'dC[x] .* E.
@@ -4260,7 +4270,7 @@ rewrite !andbP; intros (Hx1,Hx2) (Hy1,H2) H.
 rewrite (IH _ _ k1 k2), (IH _ _ k1 k2.+1), (IH _ _ k1.+1 k2); 
       Grm0; auto with arith.
 rewrite <-plus_n_Sm in H; auto with arith.
-apply Lt.lt_trans with (k1 + k2).+1; auto with arith.
+apply Nat.lt_trans with (k1 + k2).+1; auto with arith.
 rewrite <-plus_n_Sm in H; auto with arith.
 Qed.
 
@@ -4269,21 +4279,20 @@ Lemma meet_hom n k1 k2 (x y : vect n) :
   hom n k1 x -> hom n k2 y -> hom n (k1 + k2 - n) (x ∧ y).
 Proof.
 intros Hx Hy.
-case (Lt.le_or_lt k1 n); intros Hk1.
+case (Nat.le_gt_cases k1 n); intros Hk1.
 2: rewrite hom_lt with (1 := Hk1)(2:= Hx); Grm0; apply homk0.
-case (Lt.le_or_lt k2 n); intros Hk2.
+case (Nat.le_gt_cases k2 n); intros Hk2.
 2: rewrite hom_lt with (1 := Hk2)(2:= Hy); Grm0; apply homk0.
-case (Lt.le_or_lt n (k1 + k2)); intros Hk1k2.
+case (Nat.le_gt_cases n (k1 + k2)); intros Hk1k2.
 2: rewrite meet_small with (1 := Hx)(2:= Hy); Grm0.
 replace (k1 + k2 - n)%nat with (n - ((n - k1) + (n - k2)))%nat; auto.
 rewrite dual_invoE with (1 := Hx), dual_invoE with (1 := Hy).
 rewrite meet_scall, meet_scalr, <-dual_join; auto 10.
-rewrite Minus.minus_plus_simpl_l_reverse with (p := (k1 + k2)%nat).
-rewrite (Plus.plus_comm k1), <-!Plus.plus_assoc, (Plus.plus_assoc k1).
-rewrite <-Minus.le_plus_minus, !Plus.plus_assoc; auto.
-rewrite !(Plus.plus_comm k2), <-!Plus.plus_assoc, <-Minus.le_plus_minus; auto.
-rewrite Plus.plus_assoc, (Plus.plus_comm (k1 + k2)); auto. 
-rewrite <-Minus.minus_plus_simpl_l_reverse; auto.
+rewrite Nat.sub_add_distr.
+rewrite minus_minus_le; auto.
+rewrite <- (Nat.add_sub k1 k2) at 1.
+rewrite <- Nat.sub_add_distr.
+now rewrite (Nat.add_comm k2), Nat.sub_add.
 Qed.
 
 Hint Resolve meet_hom : core.
@@ -4291,8 +4300,8 @@ Hint Resolve meet_hom : core.
 Lemma meetkl0 n k1 k2 x : hom n k1 x -> n <> k1 -> [k2] ∧ x = 0.
 Proof.
 intros H1 H2.
-case (Lt.le_or_lt k1 n); intros H3.
-case (Lt.le_lt_or_eq _ _ H3); intros H4.
+case (Nat.le_gt_cases k1 n); intros H3.
+apply Nat.le_lteq in H3; destruct H3 as [H4|H4].
 apply meet_small with (k1 := 0%nat) (k2 := k1); auto; apply hom0K.
 case H2; auto.
 rewrite hom_lt with (2 := H1); auto; rewrite meet0r; auto.
@@ -4308,10 +4317,10 @@ Qed.
 Lemma meetkr0 n k1 k2 x : hom n k1 x -> n <> k1 -> x ∧ [k2] = 0.
 Proof.
 intros H1 H2.
-case (Lt.le_or_lt k1 n); intros H3.
-case (Lt.le_lt_or_eq _ _ H3); intros H4.
+case (Nat.le_gt_cases k1 n); intros H3.
+apply Nat.le_lteq in H3; destruct H3 as [H4|H4].
 apply meet_small with (k1 := k1) (k2 := 0%nat); auto.
-rewrite Plus.plus_0_r; auto.
+rewrite Nat.add_0_r; auto.
 case H2; auto.
 rewrite hom_lt with (2 := H1); auto; rewrite meet0l; auto.
 Qed.
@@ -4329,9 +4338,9 @@ Lemma meet_hom_com n k1 k2 (x y : vect n) :
   hom n k2 y -> y ∧ x = ((- (1))^((n + k1) * (n + k2))).* (x ∧ y).
 Proof.
 intros Hx Hy.
-case (Lt.le_or_lt k1 n); intros Hk1.
+case (Nat.le_gt_cases k1 n); intros Hk1.
 2: rewrite hom_lt with (2 := Hx), meet0l, meet0r; Grm0.
-case (Lt.le_or_lt k2 n); intros Hk2.
+case (Nat.le_gt_cases k2 n); intros Hk2.
 2: rewrite hom_lt with (2 := Hy), meet0r, meet0l; Grm0.
 assert (Hdx := dual_hom _ _ _ Hx).
 assert (Hdy := dual_hom _ _ _ Hy).
@@ -4339,17 +4348,17 @@ assert (Hxy := meet_hom _ _ _ _ _ Hx Hy).
 assert (Hyx := meet_hom _ _ _ _ _ Hy Hx).
 rewrite (dual_invoE _ _ _ Hyx), dual_meet, (join_hom_com _ _ _ _ _ Hdx Hdy),
         dual_scal, <-dual_meet, (dual_invo _ _ _ Hxy).
-rewrite <-!scal_multE, <-!expK_add, (Plus.plus_comm k2); auto.
+rewrite <-!scal_multE, <-!expK_add, (Nat.add_comm k2); auto.
 replace ((k1 + k2 - n) * n.+1 + (n - k1) * (n - k2) + (k1 + k2 - n) * n.+1)%nat
   with (2 * ((k1 + k2 - n) * n.+1) + (n - k1) * (n - k2))%nat by ring.
 replace ((n + k1) * (n + k2)) with 
         (2 * (2 * k1 *k2 + k1 * (n - k2) + k2 * (n - k1)) + (n - k1) * (n - k2))%nat.
 rewrite !expKm1_2E; auto.
-pattern n at 5; rewrite (Minus.le_plus_minus _ _ Hk1).
-pattern n at 6; rewrite (Minus.le_plus_minus _ _ Hk2); ring.
+pattern n at 5; rewrite <-(Nat.sub_add _ _ Hk1).
+pattern n at 6; rewrite <-(Nat.sub_add _ _ Hk2); ring.
 Qed.
 
-Lemma meet_hom_id n k x : hom n k x -> odd (n - k) ->  x ∧ x = 0.
+Lemma meet_hom_id n k x : hom n k x -> Nat.odd (n - k) ->  x ∧ x = 0.
 Proof.
 intros Hx Ho.
 assert (Hdx := dual_hom _ _ _ Hx).
@@ -4378,11 +4387,13 @@ injection H1z; intros; subst.
   case (IH x k); auto; intros Hx; rewrite Hx; auto.
 injection H1z; intros; subst; rewrite dual0; Grm0.
 rewrite conjf_hom with (k := S k).
-case (even_or_odd k.+1); intros He.
+case (Nat.Even_or_Odd (k.+1)); intros He.
+apply Nat.even_spec in He.
 rewrite expKm1_even, scalE1; auto.
 case (IH y k.+1); auto.
  intros Hy; rewrite Hy; auto.
 intros H; rewrite H; auto.
+apply Nat.odd_spec in He.
 rewrite expKm1_odd, join_scall; auto.
 rewrite dual_scal, join_scalr, <-scal_multE; Krm1; rewrite scalE1; auto.
 case (IH y k.+1); auto; intros Hy; rewrite Hy; auto.
@@ -4434,11 +4445,11 @@ Lemma join2_meetE n k1 k2 (x y : vect n) :
   hom n k1 x -> hom n k2 y -> n <= k1 + k2 ->  x ∨ y = (x ∧ y) ∨ E.
 Proof.
 intros Hx Hy Hn.
-case (Lt.le_lt_or_eq _ _ Hn); clear Hn; intros Hn.
+apply Nat.le_lteq in Hn.
+destruct Hn as [Hn|Hn].
 rewrite (hom_lt n (k1 + k2) (x ∨ y)); auto.
 rewrite join_allhr with (k := (k1 + k2 - n)%nat); auto.
-apply Plus.plus_lt_reg_l with n.
-rewrite Plus.plus_0_r, <-Minus.le_plus_minus; auto with arith.
+now apply Nat.lt_add_lt_sub_l; rewrite Nat.add_0_r.
 rewrite homn_1 with (3 := Hn), join_scall, join1l, <-homn_all; subst; auto.
 Qed.
 
@@ -4451,7 +4462,7 @@ intros Hx Hy Hz Hn.
 rewrite homn_1 with (k1 := k1) (k2 := (k2 + k3)%nat); auto.
 rewrite homn_1 with (k1 := (k1 + k2)%nat) (k2 := k3); auto.
 rewrite join_assoc; auto.
-rewrite Plus.plus_assoc; auto.
+rewrite Nat.add_assoc; auto.
 Qed.
 
 (* Barnabei Brini Rota p136 *) 
@@ -4587,9 +4598,9 @@ Lemma splitll n k1 k2 x y z : hom n k1 x -> hom n 1 y ->  hom n k2 z ->
   (y ∨ x) ∧ z = (-(1))^(n + k2.+1) .* ((x ∧ (y ∨ z)) - y ∨ (x ∧ z)).
 Proof.
 intros Hx Hy Hz.
-case (Lt.le_or_lt k1 n); intros Hk1.
+case (Nat.le_gt_cases k1 n); intros Hk1.
 2: rewrite hom_lt with (2 := Hx), sub_add, !meet0l; Grm0; rewrite meet0l; auto.
-case (Lt.le_or_lt k2 n); intros Hk2.
+case (Nat.le_gt_cases k2 n); intros Hk2.
 2: rewrite hom_lt with (2 := Hz), sub_add, !meet0r; Grm0; rewrite meet0r; Grm0.
 rewrite join_hom_com with (2 := Hy) (1 := Hx), meet_scall,
         splitlr with (k1 := k1) (k2 := k2); auto.
@@ -4597,10 +4608,10 @@ rewrite sub_add, !scal_addEr, <-scal_multE, <-expK_add; auto.
 apply f_equal2 with (f := add n); auto.
 replace (k1 * 1 + (n + (k1 + k2).+1))%nat with (2 * k1 + (n + k2.+1))%nat by ring.
 rewrite expKm1_2E; auto.
-case (Lt.le_or_lt n (k1 + k2)%nat); intros Hm1.
+case (Nat.le_gt_cases n (k1 + k2)%nat); intros Hm1.
 2: rewrite meet_small with (k1 := k1) (k2 := k2); Grm0.
 assert (Hxz := meet_hom _ _ _ _ _ Hx Hz).
-rewrite join_hom_com with (1 := Hxz) (2 := Hy), !Mult.mult_1_r; auto.
+rewrite join_hom_com with (1 := Hxz) (2 := Hy), !Nat.mul_1_r; auto.
 rewrite <-!scal_multE, expKm1_sub; auto.
 Krm1; rewrite  opp_multKl, <-expKS, <- expK_add; auto.
 replace ((n + k2.+1).+1 +(k1 + k2 + n))%nat with
@@ -4616,7 +4627,7 @@ rewrite meet_hom_com with (k2 := k2) (k1 := (k1 + 1)%nat); auto.
 rewrite splitlr with (k1 := k1) (k2 := k2); auto.
 rewrite sub_add, !scal_addEr, <-!scal_multE; auto.
 apply f_equal2 with (f := add n); auto.
-rewrite join_hom_com with (1 := Hz) (2 := Hy), !Mult.mult_1_r, meet_scalr,
+rewrite join_hom_com with (1 := Hz) (2 := Hy), !Nat.mul_1_r, meet_scalr,
         <-scal_multE, <-expK_add; auto.
 rewrite meet_hom_com with (k1 := k1) (k2 := (k2 + 1)%nat) (x := x); auto.
 rewrite <-scal_multE, <-!expK_add; auto.
@@ -4638,7 +4649,7 @@ rewrite meet_hom_com with (k2 := k2) (k1 := (1 + k1)%nat); auto.
 rewrite splitll with (k1 := k1) (k2 := k2); auto.
 rewrite sub_add, !scal_addEr, <-!scal_multE; auto.
 apply f_equal2 with (f := add n); auto.
-rewrite join_hom_com with (1 := Hz) (2 := Hy), !Mult.mult_1_r, meet_scalr,
+rewrite join_hom_com with (1 := Hz) (2 := Hy), !Nat.mul_1_r, meet_scalr,
         <-scal_multE, <-expK_add; auto.
 rewrite meet_hom_com with (k1 := k1) (k2 := (k2 + 1)%nat) (x := x); auto.
 rewrite meet_scalr, <-scal_multE, <-!expK_add; auto.
@@ -4683,13 +4694,13 @@ Lemma meet_join_distrl n k1 k2 x y z :
   '@y ∧ (x ∨ z) = (-(1))^k2 .* (('@y ∧ x) ∨ z)  +  x ∨ ('@y ∧ z).
 Proof.
 intros Hx Hy Hz.
-case (Lt.le_or_lt n 0); intros Hn.
+case (Nat.le_gt_cases n 0); intros Hn.
 destruct n.
 rewrite hom_lt with (2 := Hy); Grm0.
 contradict Hn; auto with arith.
-case (Lt.le_or_lt k1 n); intros Hk1.
+case (Nat.le_gt_cases k1 n); intros Hk1.
 2: rewrite hom_lt with (2 := Hx); Grm0.
-case (Lt.le_or_lt k2 n); intros Hk2.
+case (Nat.le_gt_cases k2 n); intros Hk2.
 2: rewrite hom_lt with (2 := Hz); Grm0.
 pattern x at 1; rewrite dual_invoE with (1 := Hx).
 pattern z at 1; rewrite dual_invoE with (1 := Hz).
@@ -4774,11 +4785,11 @@ destruct l2 as [|c l2].
 assert (F2: hom n 0 '@(joinl n (a :: l))).
 rewrite H2l1, H2l2; simpl.
 replace 0%nat with ((n - 1) + 1 - n)%nat; auto.
-rewrite Plus.plus_comm, <-Minus.le_plus_minus, <-Minus.minus_n_n; auto.
+now rewrite Nat.sub_add, Nat.sub_diag.
 case (homE n n k.+1 (joinl n (a :: l))); auto.
 rewrite dual_invoE with (1 := Hx).
 pattern n at 2; replace n with (n - 0)%nat; auto.
-rewrite <-Minus.minus_n_O; auto.
+rewrite <-Nat.sub_0_r; auto.
 intros; subst n; contradict Hn; auto with arith.
 intros H1a; case Hal; auto.
 assert (Hc: hom n 1 c) by
@@ -4790,7 +4801,7 @@ split.
 assert (F2: forall y, hom n 1 y -> '@a ∧ y = ['C['@a ∧ y]]).
 intros y Hy; apply hom0E.
 replace 0%nat with ((n - 1) + 1 - n)%nat; auto.
-rewrite Plus.plus_comm, <-Minus.le_plus_minus, <-Minus.minus_n_n; auto.
+now rewrite Nat.sub_add, Nat.sub_diag.
 replace (joinl n (b :: c :: l2)) with
       (joinl n (b::(c + (-(1) * f c * f b ^-1) .* b)::
              map (fun x : vect n => x + (-(1) * f x * f b ^-1) .* b) l2)).
@@ -4861,16 +4872,18 @@ Proof.
 intros Hk1Hk2 Hx Hy.
 assert (Hmx: hom n k1 x) by (apply grade_hom; auto).
 assert (Hmy: hom n k2 y) by (apply grade_hom; auto).
-case (Lt.le_or_lt k1 n); intros Hk1.
+case (Nat.le_gt_cases k1 n); intros Hk1.
 2: rewrite hom_lt with (1 := Hk1)(2:= Hmx); Grm0; apply grade0.
-case (Lt.le_lt_or_eq _ _ Hk1); intros H1k1; subst.
+apply Nat.le_lteq in Hk1; destruct Hk1 as[Hk1 | Hk1]; subst.
 2: rewrite homn_all with (1 := Hmx), meet_scall, meet_alll.
-2: apply grade_scal; rewrite Minus.minus_plus; auto with arith.
-case (Lt.le_or_lt k2 n); intros Hk2.
+2: apply grade_scal.
+2: rewrite Nat.add_comm, Nat.add_sub; auto with arith.
+case (Nat.le_gt_cases k2 n); intros Hk2.
 2: rewrite hom_lt with (1 := Hk2)(2:= Hmy); Grm0; apply grade0.
-case (Lt.le_lt_or_eq _ _ Hk2); intros H1k2; subst.
+apply Nat.le_lteq in Hk2; destruct Hk2 as[Hk2 | Hk2]; subst.
 2: rewrite homn_all with (1 := Hmy), meet_scalr, meet_allr.
-2: apply grade_scal; rewrite Plus.plus_comm, Minus.minus_plus; auto with arith.
+2: apply grade_scal.
+2: rewrite Nat.add_sub; auto with arith.
 replace (k1 + k2 - n)%nat with (n - ((n - k1) + (n - k2)))%nat; auto.
 assert (F1: hom n (k1 + k2 - n) (x ∧ y)) by
   (rewrite gradeE in Hx, Hy; case Hx; case Hy; auto).
@@ -4878,18 +4891,20 @@ rewrite dual_invoE with (1 := F1).
 apply grade_scal.
 rewrite dual_meet.
 apply grade_dual; auto.
-apply Plus.plus_lt_reg_l with k1.
-rewrite Plus.plus_assoc, <-Minus.le_plus_minus, Plus.plus_comm; auto.
-apply Plus.plus_lt_compat_r.
-apply Plus.plus_lt_reg_l with k2.
-rewrite <-Minus.le_plus_minus, Plus.plus_comm; auto.
+apply  Nat.add_lt_mono_l with k1.
+rewrite Nat.add_assoc, (Nat.add_comm k1).
+rewrite Nat.sub_add; auto with arith.
+rewrite Nat.add_comm; auto.
+apply  Nat.add_lt_mono_r.
+apply  Nat.add_lt_mono_l with k2.
+rewrite Nat.add_comm; auto.
+rewrite Nat.sub_add, Nat.add_comm; auto with arith.
 apply grade_join; auto; apply grade_dual; auto.
-rewrite Minus.minus_plus_simpl_l_reverse with (p := (k1 + k2)%nat).
-rewrite (Plus.plus_comm k1), <-!Plus.plus_assoc, (Plus.plus_assoc k1).
-rewrite <-Minus.le_plus_minus, !Plus.plus_assoc; auto.
-rewrite !(Plus.plus_comm k2), <-!Plus.plus_assoc, <-Minus.le_plus_minus; auto.
-rewrite Plus.plus_assoc, (Plus.plus_comm (k1 + k2)); auto. 
-rewrite <-Minus.minus_plus_simpl_l_reverse; auto.
+rewrite Nat.sub_add_distr.
+rewrite minus_minus_le; auto with arith.
+rewrite <- (Nat.add_sub k1 k2) at 1.
+rewrite <- Nat.sub_add_distr.
+rewrite (Nat.add_comm k2), Nat.sub_add; auto with arith.
 Qed.
 
 (* Defining the natural injection of Kn in Gn *)
@@ -4939,7 +4954,6 @@ Qed.
 Lemma k2g_hom n x : hom n 1 ('v_x).
 Proof.
 induction n as [|n IH]; Krm0.
-simpl; rewrite eqKI; auto.
 destruct x as [k x]; simpl.
 rewrite  hom0K; apply (IH x).
 Qed.
@@ -4985,7 +4999,7 @@ rewrite meet_scalr.
 replace ((n.+1 + (n.+1 - 1)) * (n.+1 + 1))%nat with 
         (2 * ((n.+1 -1) * n.+2) +  (1 * n .+2))%nat.
 rewrite expKm1_2E; auto.
-simpl minus; rewrite <-Minus.minus_n_O.
+simpl minus; rewrite Nat.sub_0_r.
 ring.
 Qed.
 
