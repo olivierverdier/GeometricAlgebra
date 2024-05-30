@@ -1,6 +1,6 @@
 
 Require Import PeanoNat.
-Require Import ArithRing Div2 Bool Even Setoid Min List Aux Field VectorSpace Kn.
+Require Import ArithRing Bool Setoid List Aux Field VectorSpace Kn.
 
 Section Vect.
 
@@ -54,7 +54,7 @@ Fixpoint add (n : nat) : vect n -> vect n -> vect n :=
 Fixpoint genk (n: nat) (k: K) {struct n}: (vect n) :=
    match n return vect n with 0%nat => k | n1.+1 => (genk n1 0%f, genk n1 k) end.
 Notation " [ k ] " := (genk _ k%f) (at level 9): g_scope.
-Arguments genk _ _%field_scope.
+Arguments genk _ _%_field_scope.
 
 (* Multiplication by a scalar *)
 Fixpoint scal (n : nat) (k: K) {struct n}: vect n -> vect n :=
@@ -703,7 +703,7 @@ induction n as [| n IH]; simpl; auto.
 destruct x; destruct y; rewrite !andbP; intros (H1,H2) (H3,H4).
 rewrite hom_lt with (2:= H2); auto with arith.
 rewrite hom_lt with (2:= H4); auto with arith.
-rewrite !(proj_lt n n.+1), <-!app_nil_end; auto with arith.
+rewrite !(proj_lt n n.+1), !app_nil_r; auto with arith.
 intros H; rewrite (IH _ _ H1 H3); auto.
 Qed.
 

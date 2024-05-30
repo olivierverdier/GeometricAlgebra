@@ -1,4 +1,4 @@
-Require Import PeanoNat ArithRing Div2 Bool Even Setoid Min List Aux Wf_nat.
+Require Import PeanoNat ArithRing Bool Setoid List Aux Wf_nat.
 Require Import Field VectorSpace Kn Grassmann.
 
 

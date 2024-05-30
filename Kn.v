@@ -2,6 +2,7 @@ Require Import Aux List Setoid Field VectorSpace.
 
 Section Kn.
 
+Locate params.
 (* This is our scalar space with its dimension *)
 Variable p : params.
 (* The operations for scalar have the exprected properties *)

@@ -1,4 +1,4 @@
-Require Import Div2 Bool Even Setoid Min List Aux Field VectorSpace Grassmann.
+Require Import Bool Setoid List Aux Field VectorSpace Grassmann.
 Require Import Field_tac Ring_tac.
 
 Section Vect.

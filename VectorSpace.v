@@ -1,4 +1,4 @@
-Require Import Setoid Field Min List Aux.
+Require Import Setoid Field List Aux.
 
 Structure eparams: Type := {
  E:> Set;                      (* the vector type *)
@@ -17,7 +17,7 @@ Notation "0" := (E0 _): vector_scope.
 Notation "x + y" := (addE _ x y): vector_scope.
 Notation "x .* y" := (scalE _ x%f y) (at level 31, no associativity): vector_scope.
 
-Arguments scalE _ _%field_scope _%vector_scope.
+Arguments scalE _ _%_field_scope _%_vector_scope.
 
 Section VectorSpace.
 

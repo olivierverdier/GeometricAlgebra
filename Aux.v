@@ -1,4 +1,4 @@
-Require Import List Min Arith Div2.
+Require Import List Arith.
 
 Notation "n .+1" := (S n)(at level 2, left associativity, format "n .+1"): nat_scope.
 
@@ -183,7 +183,7 @@ Qed.
 Lemma uniq_app_inv_l l1 l2: uniq (l1 ++ l2) -> uniq l1.
 Proof.
 generalize l1; induction l2 as [| a l2 IH]; clear l1; intros l1.
-rewrite <-app_nil_end; auto.
+rewrite app_nil_r; auto.
 intros HH; apply uniq_cons_inv with a.
 apply IH.
 apply uniq_perm with (2 := HH).
