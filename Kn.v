@@ -2,6 +2,7 @@ Require Import Aux List Setoid Field VectorSpace.
 
 Section Kn.
 
+Locate params.
 (* This is our scalar space with its dimension *)
 Variable p : params.
 (* The operations for scalar have the exprected properties *)
@@ -200,7 +201,6 @@ intros HH; generalize l1; elim HH; clear l1 l2 l3 HH; simpl; auto.
 intros [|b l1]; auto.
 intros l2 HH IH [|b l1].
   rewrite multK0r; auto; apply eql_t0Nl.
-  generalize (IH nil); auto.
   rewrite multK0r; auto; apply eql_t0Nl.
   generalize (IH l1); auto; case l1; auto.
 intros l2 HH IH [|b l1].

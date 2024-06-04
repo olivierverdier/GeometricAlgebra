@@ -1,0 +1,54 @@
+---
+fullname: GeometricAlgebra
+shortname: GeometricAlgebra
+organization: thery
+community: false
+dune: false
+action: true
+
+synopsis: Geometric Algebra
+
+description: |-
+  This is an update of the original project 
+    [GeometricAlgebra](http://www-sop.inria.fr/marelle/GeometricAlgebra/).
+  The project should now be compatible with Coq 8.17.0.
+
+  Simply run `make` to compile the relevant files.
+
+  This is the content of the old Readme:
+  
+  >This archive contains all the material of the formalisation of our Grassman
+  >Cayley and Clifford formalisation. It has been developped with Coq 8.3
+  >To compile it, a simple make should be enough
+  >
+  >Laurent.Fuchs@sic.univ-poitiers.fr
+  >Laurent.Thery@inria.fr
+  
+authors:
+- name: Laurent Théry
+
+maintainers:
+- name: Laurent Théry
+  nickname: thery
+
+opam-file-maintainer: thery@sophia.inria.fr
+
+license:
+  fullname: MIT License
+  identifier: MIT
+
+supported_coq_versions:
+  text: '8.17 or later'
+  opam: '{(>= "8.17")}'
+
+tested_coq_opam_versions:
+- version: '1.17.0-coq-8.17'
+  repo: 'mathcomp/mathcomp'
+
+namespace: GeometricAlgebra
+
+keywords:
+- name: geometric algebra
+
+
+---

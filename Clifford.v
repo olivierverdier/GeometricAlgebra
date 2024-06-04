@@ -1,4 +1,4 @@
-Require Import ArithRing Div2 Bool Even Setoid Min List Aux Wf_nat.
+Require Import PeanoNat ArithRing Bool Setoid List Aux Wf_nat.
 Require Import Field VectorSpace Kn Grassmann.
 
 
@@ -317,7 +317,7 @@ destruct x; rewrite !rev_conj, !conj_invo, !IH; auto.
 Qed.
 
 Lemma rev_hom  n m x : (m <= n)%nat -> hom p n m x -> 
-   'R[x] = ((-(1)) ^ (div2 (m * (m - 1))))%f .* x.
+   'R[x] = ((-(1)) ^ (Nat.div2 (m * (m - 1))))%f .* x.
 Proof.
 generalize m; clear m.
 induction n as [|n IH]; simpl; auto; try Vfold n.
@@ -332,19 +332,19 @@ intros; discriminate.
 rewrite andbP.
 intros HH [HH1 HH2].
 assert (HH' : m <= n); auto with arith.
-case (Lt.le_or_lt m.+1 n); intros HH''.
+case (Nat.le_gt_cases m.+1 n); intros HH''.
 rewrite IH with (2 := HH1); auto with arith.
 rewrite IH with (2 := HH2); auto with arith.
 rewrite conj_scal, !conjf_hom  with (2 := HH1); auto.
 rewrite <-scal_multE, <-expK_add; auto.
-rewrite Plus.plus_comm, div2_prop; simpl; auto.
-rewrite <-!Minus.minus_n_O; simpl; auto.
+rewrite Nat.add_comm, div2_prop; simpl; auto.
+rewrite !Nat.sub_0_r; simpl; auto.
 rewrite hom_lt with (3 := HH2); auto with arith.
 rewrite rev0, IH with (2 := HH1); Vrm0.
 rewrite conj_scal, !conjf_hom  with (2 := HH1); auto.
 rewrite <-scal_multE, <-expK_add; auto.
-rewrite Plus.plus_comm, div2_prop; simpl; auto.
-rewrite <-!Minus.minus_n_O; simpl; auto.
+rewrite Nat.add_comm, div2_prop; simpl; auto.
+rewrite !Nat.sub_0_r; simpl; auto.
 Qed.
 
 Lemma rev_join n x y : 'R[x ∧ y] = 'R[y] ∧ 'R[x] :> vect n.
