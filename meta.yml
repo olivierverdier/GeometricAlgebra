@@ -11,7 +11,7 @@ synopsis: Geometric Algebra
 description: |-
   This is an update of the original project 
     [GeometricAlgebra](http://www-sop.inria.fr/marelle/GeometricAlgebra/).
-  The project should now be compatible with Coq 8.17.0.
+  The project should now be compatible with Rocq 9.0
 
   Simply run `make` to compile the relevant files.
 
@@ -38,11 +38,11 @@ license:
   identifier: MIT
 
 supported_coq_versions:
-  text: '8.17 or later'
-  opam: '{(>= "8.17")}'
+  text: '9.0 or later'
+  opam: '{(>= "9.0")}'
 
 tested_coq_opam_versions:
-- version: '1.17.0-coq-8.17'
+- version: '2.4.0-rocq-prover-9.0'
   repo: 'mathcomp/mathcomp'
 
 namespace: GeometricAlgebra

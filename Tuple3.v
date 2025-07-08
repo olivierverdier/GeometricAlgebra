@@ -1,5 +1,5 @@
-Require Import List Eqdep_dec Compare Bool Field Field_tac ZArith.
-Require Import VectorSpace Grassmann G3.
+From Stdlib Require Import List Eqdep_dec Compare Bool Field_tac ZArith.
+Require Import Field VectorSpace Grassmann G3.
 
 Fixpoint natc (m n : nat) :=
 match m, n with 0, 0 => Eq | 0, _ => Lt | _, 0 => Gt | S m1, S n1 => natc m1 n1 end.
@@ -1918,13 +1918,15 @@ rewrite intervs_cons; ring.
 Qed.
 
 Definition term_zerop (t : term) :=
-  let (z,l) := t in Zeq_bool 0%Z z.
+  let (z,l) := t in Z.eqb 0%Z z.
 
 Lemma term_zerop_c t : if term_zerop t then {m[t]} = 0%f else True.
 Proof.
-destruct t as [z l]; simpl.
-generalize (Zeq_bool_eq 0 z); case Zeq_bool; auto.
-intros HH; rewrite <-HH; auto; simpl; ring.
+destruct t as [z l]; unfold term_zerop.
+generalize (Z.eqb_eq 0 z); case Z.eqb; simpl; auto.
+intros HH; auto.
+replace z with 0%Z by (case HH; auto).
+simpl; ring.
 Qed.
 
 Definition coef := list term.

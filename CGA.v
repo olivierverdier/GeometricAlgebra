@@ -1,10 +1,12 @@
-Require Import ArithRing Bool Field VectorSpace Kn.
-Require Import Clifford Grassmann QArith List.
-Require Import Psatz.
+From Stdlib Require Import ArithRing Bool QArith List Psatz.
+Require Import  Field VectorSpace Kn Clifford Grassmann.
 
 Open Scope Q_scope.
 
+Require Import Field VectorSpace Kn Clifford Grassmann.
+
 Module CGA3D.
+
 
 Local Definition p := Qparams 5.
 
@@ -51,6 +53,7 @@ Definition e_m := (Vgen p 4).
 Eval compute in e_m.
 Definition e_0 := (1/2) .*(e_m-e_p).
 Compute e_0.
+
 Definition e_inf := e_m+e_p.
 Compute e_inf.
 

@@ -1,5 +1,5 @@
-Require Import PeanoNat ArithRing Bool Setoid List Aux Wf_nat.
-Require Import Field VectorSpace Kn Grassmann.
+From Stdlib Require Import PeanoNat ArithRing Bool Setoid List Wf_nat.
+Require Import Aux Field VectorSpace Kn Grassmann.
 
 
 Section Vect.

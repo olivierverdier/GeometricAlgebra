@@ -17,10 +17,10 @@ jobs:
     strategy:
       matrix:
         image:
-          - 'mathcomp/mathcomp:1.17.0-coq-8.17'
+          - 'mathcomp/mathcomp:2.4.0-rocq-prover-9.0'
       fail-fast: false
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: coq-community/docker-coq-action@v1
         with:
           opam_file: 'coq-GeometricAlgebra.opam'

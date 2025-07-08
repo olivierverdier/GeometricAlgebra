@@ -1,4 +1,5 @@
-Require Import Setoid Field List Aux.
+From Stdlib Require Import Setoid List.
+Require Import Field Aux.
 
 Structure eparams: Type := {
  E:> Set;                      (* the vector type *)
@@ -15,7 +16,8 @@ Delimit Scope vector_scope with v.
 Notation "x ?= y" := (eqE _ x y) (at level 70): vector_scope.
 Notation "0" := (E0 _): vector_scope.
 Notation "x + y" := (addE _ x y): vector_scope.
-Notation "x .* y" := (scalE _ x%f y) (at level 31, no associativity): vector_scope.
+Notation "x .* y" := (scalE _ x%f y) 
+  (at level 31, no associativity): vector_scope.
 
 Arguments scalE _ _%_field_scope _%_vector_scope.
 
@@ -34,7 +36,8 @@ Implicit Type k: stype p.
 Definition  mprod ks vs :=
    fold2 (fun k v r => k .* v + r) ks vs 0.
 
-Notation " x *X* y " := (mprod x y) (at level 40, no associativity): vector_scope.
+Notation " x *X* y " := (mprod x y) 
+  (at level 40, no associativity): vector_scope.
 
 
 (* What it means for a sub vector space (i.e a list of vectors)
@@ -257,7 +260,7 @@ apply Aux.perm_skip; auto.
 apply perm_sym; auto.
 case (one_diff_zero _ sfP).
 apply (H1 (1%f::(-(1))%f::(map (fun _ => 0%f) vs1))); simpl; auto.
-rewrite map_length; auto.
+rewrite length_map; auto.
 repeat rewrite mprod_S; rewrite mprod0.
 rewrite addE0r.
 rewrite <-scal_addEl; auto.
@@ -275,7 +278,7 @@ intros vs3 H3 ks Hlks Hpks x Hx.
 assert (H1: free (vs1 ++ vs3)).
 apply free_perm with (1 := perm_sym _ _ _ H3); auto.
 apply (H1 (ks ++ map (fun _ => 0%f) vs3)%list); auto with datatypes.
-repeat rewrite app_length; rewrite map_length; auto.
+repeat rewrite length_app; rewrite length_map; auto.
 rewrite mprod_app; auto.
 rewrite Hpks; rewrite addE0l; auto.
 rewrite mprod0; auto.
@@ -424,7 +427,7 @@ rewrite addE_mprod; try rewrite Hks1; try rewrite Hks2; auto.
 rewrite Hlks1; auto.
 intros k x Hcx (ks, (Hlks, Hks)).
 exists (map (fun k1 => (k * k1)%f) ks); split.
-  rewrite map_length; auto.
+  rewrite length_map; auto.
 rewrite scalE_mprod; rewrite Hks; auto.
 Qed.
 

@@ -1,8 +1,8 @@
-Require Import Aux List Setoid Field VectorSpace.
+From Stdlib Require Import List Setoid Field.
+Require Import Field VectorSpace Aux.
 
 Section Kn.
 
-Locate params.
 (* This is our scalar space with its dimension *)
 Variable p : params.
 (* The operations for scalar have the exprected properties *)
@@ -200,7 +200,7 @@ Proof.
 intros HH; generalize l1; elim HH; clear l1 l2 l3 HH; simpl; auto.
 intros [|b l1]; auto.
 intros l2 HH IH [|b l1].
-  rewrite multK0r; auto; apply eql_t0Nl.
+  rewrite multK0r; auto; apply eql_t0Nl; apply IH.
   rewrite multK0r; auto; apply eql_t0Nl.
   generalize (IH l1); auto; case l1; auto.
 intros l2 HH IH [|b l1].
@@ -319,7 +319,7 @@ Qed.
 Lemma base_length n : length (base n) = n.
 Proof.
 induction n as [| n IH]; simpl; auto.
-rewrite map_length; rewrite IH; auto.
+rewrite length_map; rewrite IH; auto.
 Qed.
 
 (* The base is free *)
@@ -341,7 +341,7 @@ Proof.
       case (multK_integral _ Hp _ _ H3); try subst; auto; intros Heq.
       case (one_diff_zero (vn_eparams n)); auto; apply (vgenk_inj _ _ _ Heq).
     +
-      injection H1; rewrite map_length; auto.
+      injection H1; rewrite length_map; auto.
       intros Hl; apply (IH ks); auto.
 Qed.
 

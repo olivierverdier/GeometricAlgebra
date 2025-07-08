@@ -1,4 +1,5 @@
-Require Import ZArith Aux.
+From Stdlib Require Import ZArith.
+Require Import Aux.
 
 (* The record of operations *)
 

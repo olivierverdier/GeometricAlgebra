@@ -1,5 +1,6 @@
-Require Import Bool Setoid List Aux Field VectorSpace Grassmann.
-Require Import Field_tac Ring_tac.
+From Stdlib Require Import Bool Setoid List.
+From Stdlib Require Import Field_tac Ring_tac.
+Require Import Aux Field VectorSpace Grassmann.
 
 Section Vect.
 

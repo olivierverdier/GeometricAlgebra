@@ -1,4 +1,4 @@
-Require Import List Arith.
+From Stdlib Require Import List Arith.
 
 Notation "n .+1" := (S n)(at level 2, left associativity, format "n .+1"): nat_scope.
 
@@ -356,7 +356,7 @@ Proof. exact (refl_equal true). Qed.
 
 Global Hint Resolve b2PropT : core.
 
-Require Import Bool.
+From Stdlib Require Import Bool.
 
 Lemma andbP b1 b2: b1 && b2 <-> b1 /\ b2.
 Proof.

@@ -1,6 +1,7 @@
 
-Require Import PeanoNat.
-Require Import ArithRing Bool Setoid List Aux Field VectorSpace Kn.
+From Stdlib Require Import PeanoNat.
+From Stdlib Require Import ArithRing Bool Setoid List.
+Require Import Aux Field VectorSpace Kn.
 
 Section Vect.
 
@@ -741,8 +742,8 @@ Proof.
 generalize k; clear k.
 induction n as [| n IH]; simpl.
 intros [| k]; auto.
-intros [| k]; destruct x; rewrite ?map_length; auto.
-rewrite !app_length, !map_length, !IH; auto.
+intros [| k]; destruct x; rewrite ?length_map; auto.
+rewrite !length_app, !length_map, !IH; auto.
 Qed.
 
 Lemma base0 n : base n 0 = 'e_n::nil.
@@ -769,7 +770,7 @@ Proof.
 generalize k; clear k.
 induction n as [| n IH]; simpl base; intros [| k]; auto.
 rewrite base0; auto.
-rewrite app_length, !map_length, !IH, bin_def, Nat.add_comm; auto.
+rewrite length_app, !length_map, !IH, bin_def, Nat.add_comm; auto.
 Qed.
 
 Lemma base_lift n k :  incl (map (lift n) (base n k)) (base n.+1 k).
@@ -821,7 +822,7 @@ rewrite  !lift_mprod, !dlift_mprod, !IH; auto.
 simpl; Vfold n; rewrite addE0l, addE0r; auto.
 generalize HH; case hom; auto; intros; discriminate.
 generalize HH; case hom; auto; intros; discriminate.
-rewrite map_length, proj_base_length; auto.
+rewrite length_map, proj_base_length; auto.
 Qed.
 
 Lemma base_free n k : free _ (base n k).
@@ -842,10 +843,10 @@ rewrite mprod0r; simpl; auto; Vfold n.
 rewrite en_def, scalE0r, addE0l, addE0r, scalk, multK1r; auto.
 intros HH; injection HH; intros HH1 k [HK | []]; subst.
 apply injk with (1 := HH1); auto.
-intros l; rewrite app_length, !map_length.
+intros l; rewrite length_app, !length_map.
 intros H1 H2 k1 Hk1.
 case (list_split _ _ _ _ H1); intros l1 (l2, (Hl1, (Hl2, Hl3))); subst.
-rewrite mprod_app, lift_mprod, dlift_mprod in H2; try rewrite map_length; auto.
+rewrite mprod_app, lift_mprod, dlift_mprod in H2; try rewrite length_map; auto.
 injection H2; Vfold n; rewrite addE0r, addE0l; auto; intros He1 He2.
 case (in_app_or _ _ _ Hk1); intros H3.
 apply (IH k l1); auto.
@@ -1608,7 +1609,7 @@ Lemma all_prods_length n vs :
   length (all_prods n vs) = exp 2 (length vs).
 Proof.
 induction vs as [| v vs IH]; simpl all_prods; auto.
-rewrite app_length; rewrite map_length; rewrite IH.
+rewrite length_app; rewrite length_map; rewrite IH.
 simpl length; rewrite expS; simpl; auto with arith.
 Qed.
 
@@ -1656,7 +1657,7 @@ Fixpoint v2l (n: nat) : vect n -> list K :=
 Lemma v2l_length n v : length (v2l n v) = exp 2 n.
 Proof.
 induction n as [| n IH]; auto.
-simpl; destruct v; rewrite app_length; rewrite IH; rewrite IH.
+simpl; destruct v; rewrite length_app; rewrite IH; rewrite IH.
 case n; auto.
 Qed.
 
@@ -1670,7 +1671,7 @@ simpl vect; destruct v as [x1 x2].
 simpl v2l; simpl base; rewrite base0, en_def; simpl app; unfold dlift.
  rewrite (all_prods_cons n.+1).
 rewrite mprod_app; auto.
-2: rewrite v2l_length, map_length, all_prods_length, map_length, 
+2: rewrite v2l_length, length_map, all_prods_length, length_map, 
    base_length; auto.
 rewrite (all_prods_lift n), (lift_mprod n), IH, map_map.
 replace 
@@ -1710,13 +1711,13 @@ unfold mprod; simpl.
 rewrite multK1r; auto; rewrite addK0r; auto; intros _ H k.
 rewrite H; intros [H1 | H1]; auto; case H1.
 rewrite base1_S; simpl.
-rewrite app_length, map_length, (all_prods_lift n), map_length; intros Hk1.
+rewrite length_app, length_map, (all_prods_lift n), length_map; intros Hk1.
 case (list_split _ _ _ _ Hk1).
 intros l1 (l2, (Hl1, (Hl2, Hl3))).
 rewrite Hl1.
 unfold base, all_prods; fold base; fold all_prods.
 rewrite (mprod_app (vn_eparams n.+1)); auto.
-2: rewrite map_length, map_length; auto.
+2: rewrite length_map, length_map; auto.
 rewrite map_map.
 assert (H1: forall l,
   map (fun x : vect n => join n.+1 (gen n.+1 0) (lift n x)) l =
@@ -1934,7 +1935,7 @@ intros l Hd Hl Hp1.
 assert (forall a, In a l -> (a: vect 0) = 0).
 intros a H1; apply (cbl0_inv _ (fn 0)); apply Hl; auto.
  exists (map (fun x => (1%f)) l); exists (1%f); repeat split.
-rewrite map_length; auto.
+rewrite length_map; auto.
 destruct l; simpl; auto.
 apply one_diff_zero; auto.
 clear Hd Hl Hp1; induction l as [|a l IH]; simpl; auto.
@@ -1970,7 +1971,7 @@ case (IH ly); auto; clear HH.
 generalize H5ly; simpl; rewrite <-(lift_joinl n); intros HH; injection HH; auto.
 intros ly1 (i, (H1i, (H2i, (H3i, H4i)))).
 exists ly1; exists i; repeat split; simpl; auto.
-rewrite map_length; auto.
+rewrite length_map; auto.
 rewrite (lift_mprod n); rewrite H4i; auto.
 intros [| a [| b lx]]; try (intros; discriminate).
 intros HH ly H1y H2y H3y H4y H5y; injection HH; intros; subst n1; clear HH.
@@ -1990,7 +1991,7 @@ case (H1y a); auto with datatypes.
 case (IH ly); auto; try split.
 intros ly1 (i1, (H1i1, (H2i1, (H3i1, H4i1)))).
 exists (0%f::ly1); exists i1; repeat split; simpl; Vfold n; auto.
-rewrite map_length; simpl in H1i1; rewrite H1i1; auto.
+rewrite length_map; simpl in H1i1; rewrite H1i1; auto.
 rewrite (mprod_S (vn_eparams n.+1)), scalE0l, addE0l; auto.
 
 rewrite (lift_mprod n), H4i1; auto.
@@ -2055,7 +2056,7 @@ generalize (eqK_dec _ Hp k2 0%f); case eqK; intros Hk2.
 *
 exists (k1::0%f::lk1++lk2)%list; exists i2; repeat split; auto.
 generalize Hlk2 Hlk3; simpl; clear Hlk2 Hlk3; intros Hlk2 Hlk3.
-rewrite !app_length, Hlk2, Hlk3; auto.
+rewrite !length_app, Hlk2, Hlk3; auto.
 generalize H2ly2; rewrite Hlk1; simpl.
 intros [HH | HH]; auto.
 case (in_app_or  _ _ _ HH); auto with datatypes.
@@ -2068,7 +2069,7 @@ rewrite (scalE0l (vn_eparams n.+1)); auto. rewrite addE0l; auto.
 exists ((k1+-(k2 * fst b))%f::(k2 * fst a)%f::lk1++lk2)%list; 
   exists (k2 * fst a)%f; repeat split; auto with datatypes.
 generalize Hlk2 Hlk3; simpl; clear Hlk2 Hlk3; intros Hlk2 Hlk3.
-rewrite !app_length, Hlk2, Hlk3; auto.
+rewrite !length_app, Hlk2, Hlk3; auto.
 intros HH; case (multK_integral _ Hp _ _ HH); intros HH1; auto with datatypes.
 case (H1ly a); auto with datatypes.
 rewrite <- H3ly4; rewrite Hlk1; simpl.
@@ -3202,7 +3203,7 @@ case eq0_spec; intros H1x2.
 case (IH _ _ _ Hlt Hx2); intros lf1.
 intros (Hlf1, H1lf1).
 exists (map (liftk n) lf1); split; auto.
-rewrite map_length; auto.
+rewrite length_map; auto.
 rewrite one_factor_zero with (k1 := k1) (3 := H1x2); auto with arith.
 generalize lift_mcontra; unfold lift; intros HH1;
  rewrite HH1, H1lf1; auto.
@@ -3210,7 +3211,7 @@ apply Nat.succ_lt_mono in Hlt.
  case (IH _ _ _ Hlt Hx1).
 intros lfs1  (H1lfs1, H2lfs1).
 exists ((1%f, 0):: (map (liftk n) lfs1 : list (K * kn n))); simpl; Vfold n; split.
-rewrite map_length; auto.
+rewrite length_map; auto.
 rewrite !contra0l, scalE1; Vrm0.
 rewrite <- H2lfs1.
 apply (lift_mcontra n); auto.
@@ -4846,7 +4847,7 @@ intros HH; subst; auto.
 rewrite in_map_iff; intros (u, (H1u,H2u)); subst.
 apply add_hom; auto.
 rewrite <-cbl1_hom1_equiv; apply H1l2; auto with datatypes.
-simpl; rewrite map_length; auto.
+simpl; rewrite length_map; auto.
 rewrite joinlS.
 apply sym_equal; rewrite joinlS.
 change (c + (-(1) * f c * f b ^-1) .* b

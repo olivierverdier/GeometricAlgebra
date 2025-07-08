@@ -14,7 +14,7 @@ synopsis: "Geometric Algebra"
 description: """
 This is an update of the original project 
   [GeometricAlgebra](http://www-sop.inria.fr/marelle/GeometricAlgebra/).
-The project should now be compatible with Coq 8.17.0.
+The project should now be compatible with Rocq 9.0
 
 Simply run `make` to compile the relevant files.
 
@@ -30,7 +30,7 @@ This is the content of the old Readme:
 build: [make "-j%{jobs}%"]
 install: [make "install"]
 depends: [
-  "coq" {(>= "8.17")}
+  "coq" {(>= "9.0")}
 ]
 
 tags: [

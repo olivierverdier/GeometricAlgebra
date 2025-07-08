@@ -6,15 +6,15 @@ Follow the instructions on https://github.com/coq-community/templates to regener
 
 [![Docker CI][docker-action-shield]][docker-action-link]
 
-[docker-action-shield]: https://github.com/thery/GeometricAlgebra/workflows/Docker%20CI/badge.svg?branch=master
-[docker-action-link]: https://github.com/thery/GeometricAlgebra/actions?query=workflow:"Docker%20CI"
+[docker-action-shield]: https://github.com/thery/GeometricAlgebra/actions/workflows/docker-action.yml/badge.svg?branch=master
+[docker-action-link]: https://github.com/thery/GeometricAlgebra/actions/workflows/docker-action.yml
 
 
 
 
 This is an update of the original project 
   [GeometricAlgebra](http://www-sop.inria.fr/marelle/GeometricAlgebra/).
-The project should now be compatible with Coq 8.17.0.
+The project should now be compatible with Rocq 9.0
 
 Simply run `make` to compile the relevant files.
 
@@ -32,9 +32,9 @@ This is the content of the old Readme:
 - Author(s):
   - Laurent Théry
 - License: [MIT License](LICENSE)
-- Compatible Coq versions: 8.17 or later
+- Compatible Rocq/Coq versions: 9.0 or later
 - Additional dependencies: none
-- Coq namespace: `GeometricAlgebra`
+- Rocq/Coq namespace: `GeometricAlgebra`
 - Related publication(s): none
 
 ## Building and installation instructions
